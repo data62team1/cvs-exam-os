@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CVS Study OS — Data 62</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#0d1117;--surf:#161b22;--surf2:#1c2128;--acc:#e63946;--acc2:#f1faee;
+  --text:#e6edf3;--muted:#8b949e;--green:#3fb950;--yellow:#d29922;--red:#e94560;
+  --radius:10px}
+html,body{background:var(--bg);color:var(--text);font-family:'Cairo',sans-serif;min-height:100vh}
+
+nav{position:sticky;top:0;z-index:50;background:rgba(13,17,23,.88);
+  backdrop-filter:blur(16px);border-bottom:1px solid #30363d;
+  padding:12px 20px;display:flex;align-items:center;gap:10px}
+.ntitle{font-size:1.15rem;font-weight:700;color:var(--acc)}
+.nbadge{background:var(--surf2);border-radius:20px;padding:2px 10px;
+  font-size:.72rem;color:var(--muted)}
+.nright{margin-right:auto;display:flex;gap:8px;align-items:center}
+#ob-wrap{width:100px;height:5px;background:var(--surf2);border-radius:3px;overflow:hidden}
+#ob-fill{height:100%;background:linear-gradient(90deg,var(--acc),var(--acc2));width:0%;transition:width .4s}
+#ob-lbl{font-size:.7rem;color:var(--muted)}
+
+main{max-width:960px;margin:0 auto;padding:20px 14px}
+
+.sum-bar{background:var(--surf);border-radius:var(--radius);padding:12px 18px;
+  margin-bottom:20px;display:flex;flex-wrap:wrap;gap:14px;align-items:center;
+  border:1px solid #30363d}
+.sstat{text-align:center}
+.sstat .v{font-size:1.3rem;font-weight:700;color:var(--acc2)}
+.sstat .l{font-size:.68rem;color:var(--muted)}
+.rst-btn{margin-right:auto;padding:4px 12px;border-radius:6px;border:none;
+  background:rgba(0,180,216,.1);color:var(--acc);font-family:inherit;
+  font-size:.72rem;cursor:pointer}
+
+.hub-sec{margin-bottom:28px}
+.hub-sec h2{font-size:.92rem;font-weight:700;padding:9px 14px;
+  background:var(--surf);border-radius:8px;
+  display:flex;align-items:center;gap:6px;cursor:pointer;
+  user-select:none;margin-bottom:12px;border:1px solid #30363d;
+  border-right:3px solid var(--acc)}
+.caret{margin-right:auto;opacity:.45;font-size:.75rem;transition:transform .2s}
+.hub-sec.collapsed .caret{transform:rotate(-90deg)}
+.hub-sec.collapsed .cards-grid{display:none}
+
+.cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px}
+
+.card{background:var(--surf);border:1px solid #30363d;border-radius:var(--radius);
+  padding:14px;text-decoration:none;color:var(--text);display:flex;
+  flex-direction:column;gap:8px;transition:border-color .15s,transform .1s}
+.card:hover{border-color:var(--acc);transform:translateY(-2px)}
+.card-top{display:flex;align-items:center;gap:8px}
+.cicon{font-size:1.2rem}
+.cname{font-size:.88rem;font-weight:600;flex:1;line-height:1.3}
+.pbar-wrap{background:var(--surf2);border-radius:3px;height:4px;overflow:hidden}
+.pbar-fill{height:100%;background:linear-gradient(90deg,var(--acc),var(--acc2));transition:width .4s}
+.cmeta{display:flex;flex-wrap:wrap;gap:5px;font-size:.68rem;color:var(--muted)}
+.cmeta span{background:var(--surf2);border-radius:8px;padding:1px 7px}
+.cstatus{display:flex;align-items:center;gap:6px}
+.sbtn{border:none;border-radius:14px;padding:2px 9px;font-size:.65rem;
+  font-family:inherit;cursor:pointer;background:var(--surf2);color:var(--muted);
+  transition:background .15s}
+.sbtn.sr{background:rgba(210,153,34,.15);color:var(--yellow)}
+.sbtn.sd{background:rgba(63,185,80,.12);color:var(--green)}
+.sbtn.sw{background:rgba(233,69,96,.12);color:var(--red)}
+.clast{font-size:.6rem;color:var(--muted)}
+.dl-btn{border:none;border-radius:14px;padding:2px 8px;font-size:.65rem;
+  font-family:inherit;cursor:pointer;background:rgba(0,180,216,.1);color:var(--acc2);
+  margin-right:auto;transition:background .15s}
+.dl-btn:hover{background:rgba(0,180,216,.22)}
+.dl-btn.loading{opacity:.5;pointer-events:none}
+
+footer{text-align:center;color:#30363d;font-size:.72rem;padding:30px 0 20px}
+
+@media(max-width:480px){
+  .cards-grid{grid-template-columns:1fr 1fr}
+  nav{flex-wrap:wrap}
+}
+</style>
+</head>
+<body>
+<nav>
+  <span class="ntitle">🫀 CVS Study OS — Data 62</span>
+  <span class="nbadge">دفعة 62</span>
+  <span class="nright">
+    <div id="ob-wrap"><div id="ob-fill"></div></div>
+    <span id="ob-lbl">0%</span>
+  </span>
+</nav>
+
+<main>
+  <div class="sum-bar">
+    <div class="sstat"><div class="v" id="s-ans">0</div><div class="l">أسئلة أُجيبت</div></div>
+    <div class="sstat"><div class="v" id="s-tot">0</div><div class="l">سؤال فريد</div></div>
+    <div class="sstat"><div class="v" id="s-done">0</div><div class="l">ملفات ✓</div></div>
+    <div class="sstat"><div class="v" id="s-star">0</div><div class="l">محفوظ ★</div></div>
+    <button class="rst-btn" onclick="resetAll()">🗑 مسح البيانات</button>
+  </div>
+
+  <div class="hub-sec" id="sec-exams">
+    <h2 onclick="toggleSec('sec-exams')">📅 السنين السابقة<span class="caret">▼</span></h2>
+    <div class="cards-grid">
+      <a class="card" href="cvs-prev-exam2022-physio.html" onclick="markVisit('cvs_prev_exam2022_physio_01')">
+        <div class="card-top">
+          <span class="cicon">❤️</span>
+          <span class="cname">فسيولوجي — امتحان آخر السنة 2021/2022</span>
+        </div>
+        <div class="pbar-wrap"><div class="pbar-fill" id="pb-cvs_prev_exam2022_physio_01" style="width:0%"></div></div>
+        <div class="cmeta">
+          <span>39 سؤال</span>
+          <span id="ca-cvs_prev_exam2022_physio_01">0 أُجيب</span>
+          <span id="cs-cvs_prev_exam2022_physio_01">0 ★</span>
+        </div>
+        <div class="cstatus">
+          <button class="sbtn" id="sb-cvs_prev_exam2022_physio_01" onclick="cycleStatus('cvs_prev_exam2022_physio_01',event)">—</button>
+          <span class="clast" id="cl-cvs_prev_exam2022_physio_01"></span>
+          <button class="dl-btn" onclick="downloadFile('cvs-prev-exam2022-physio.html',event)" title="تحميل">⬇</button>
+        </div>
+      </a>
+    </div>
+  </div>
+</main>
+
+<footer>CVS Study OS · تيم داتا 62 · طب الأزهر بنين بالقاهرة · Built with NotebookLM</footer>
+
+<script>
+const CATALOG = [{"fid": "cvs_prev_exam2022_physio_01", "total": 39}];
+const LS_PFX  = 'exam_os_v1_';
+const HUB_KEY = 'cvs_hub_v1';
+const CYCLES  = ['','sr','sd','sw'];
+const LABELS  = {'' :'—', sr:'مراجعة', sd:'✓ تمام', sw:'⚠ ضعيف'};
+
+let hub = {st:{}, col:{}};
+
+function lsGet(k){try{return JSON.parse(localStorage.getItem(k)||'null')}catch{return null}}
+function lsSet(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch{}}
+function loadHub(){const h=lsGet(HUB_KEY);if(h)hub=Object.assign({st:{},col:{}},h);}
+function saveHub(){lsSet(HUB_KEY,hub);}
+
+function fileProg(fid){
+  const s=lsGet(LS_PFX+fid)||{};
+  const ans=Object.keys(s.answers||{}).length;
+  const star=(s.starred||[]).length;
+  let ts=0;
+  Object.values(s.answers||{}).forEach(a=>{if(a&&a.timestamp>ts)ts=a.timestamp;});
+  return{ans,star,ts};
+}
+
+function relTime(ts){
+  if(!ts)return'';
+  const m=Math.floor((Date.now()-ts)/60000);
+  if(m<1)return'منذ لحظات';
+  if(m<60)return'منذ '+m+'د';
+  const h=Math.floor(m/60);
+  if(h<24)return'منذ '+h+'س';
+  return'منذ '+Math.floor(h/24)+'ي';
+}
+
+function render(){
+  let totAns=0,totTot=0,totDone=0,totStar=0;
+  CATALOG.forEach(function({fid,total,dup}){
+    const p=fileProg(fid);
+    const pct=total>0?Math.round(p.ans/total*100):0;
+    const st=hub.st[fid]||'';
+    const el=id=>document.getElementById(id);
+    const pb=el('pb-'+fid); if(pb)pb.style.width=pct+'%';
+    const ca=el('ca-'+fid); if(ca)ca.textContent=p.ans+' أُجيب';
+    const cs=el('cs-'+fid); if(cs)cs.textContent=p.star+' ★';
+    const cl=el('cl-'+fid); if(cl)cl.textContent=relTime(p.ts);
+    const sb=el('sb-'+fid);
+    if(sb){sb.textContent=LABELS[st]||'—';sb.className='sbtn '+st;}
+    if(!dup){totAns+=p.ans; totTot+=total; totStar+=p.star;}
+    if(!dup&&st==='sd')totDone++;
+  });
+  const pct=totTot>0?Math.round(totAns/totTot*100):0;
+  document.getElementById('ob-fill').style.width=pct+'%';
+  document.getElementById('ob-lbl').textContent=pct+'%';
+  document.getElementById('s-ans').textContent=totAns;
+  document.getElementById('s-tot').textContent=totTot;
+  document.getElementById('s-done').textContent=totDone;
+  document.getElementById('s-star').textContent=totStar;
+}
+
+function cycleStatus(fid,ev){
+  ev.preventDefault(); ev.stopPropagation();
+  const cur=hub.st[fid]||'';
+  hub.st[fid]=CYCLES[(CYCLES.indexOf(cur)+1)%CYCLES.length];
+  saveHub(); render();
+}
+
+function markVisit(fid){
+  if(!hub.st[fid]){hub.st[fid]='sr';saveHub();render();}
+}
+
+function toggleSec(id){
+  const el=document.getElementById(id);
+  if(!el)return;
+  const c=el.classList.toggle('collapsed');
+  hub.col[id]=c; saveHub();
+}
+
+function restoreSections(){
+  Object.entries(hub.col).forEach(([id,c])=>{
+    const el=document.getElementById(id);
+    if(el&&c)el.classList.add('collapsed');
+  });
+}
+
+function resetAll(){
+  if(!confirm('هتمسح كل الإجابات والنجوم لكل الملفات. متأكد؟'))return;
+  CATALOG.forEach(({fid})=>localStorage.removeItem(LS_PFX+fid));
+  hub.st={};saveHub();render();
+}
+
+async function downloadFile(filename, ev){
+  ev.preventDefault(); ev.stopPropagation();
+  const btn=ev.currentTarget;
+  btn.classList.add('loading'); btn.textContent='...';
+  try{
+    const res=await fetch(filename);
+    if(!res.ok)throw new Error();
+    const blob=await res.blob();
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement('a');
+    a.href=url; a.download=filename;
+    document.body.appendChild(a); a.click(); a.remove();
+    URL.revokeObjectURL(url);
+    btn.textContent='✓';
+    setTimeout(()=>{btn.textContent='⬇';btn.classList.remove('loading');},2000);
+  }catch(e){
+    btn.textContent='✗';
+    setTimeout(()=>{btn.textContent='⬇';btn.classList.remove('loading');},2000);
+  }
+}
+
+loadHub(); restoreSections(); render();
+setInterval(render, 30000);
+</script>
+</body>
+</html>

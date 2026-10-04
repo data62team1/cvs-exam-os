@@ -1,0 +1,3188 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>CVS Physiology — End Semester 2021/2022 (Batch 62) &mdash; CVS Module</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Cairo:wght@400;600&family=Noto+Naskh+Arabic:wght@400;600&family=Tajawal:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+/* ── Reset & base ─────────────────────────────────────────────────────── */
+*{box-sizing:border-box;margin:0;padding:0}
+html{overflow-x:hidden}
+body{font-family:'Segoe UI',system-ui,sans-serif;line-height:1.5;
+     background:var(--bg);color:var(--text);transition:background .2s,color .2s;
+     overflow-x:hidden;max-width:100vw;
+     --main-fs:15px;--content-width:880px;
+     --arabic-font:'Amiri','Noto Naskh Arabic',Georgia,serif;
+     --exp-color:rgba(230,237,243,.88);
+}
+
+/* ── Font size steps (applied to main content only) ────────────────────── */
+body[data-fs="s"] {--main-fs:13px}
+body[data-fs="l"] {--main-fs:17px}
+body[data-fs="xl"]{--main-fs:19px}
+
+/* ── Theme: dark (default) ─────────────────────────────────────────────── */
+body,.theme-dark{
+  --bg:#0d1117;--surface:#161b22;--card:#1c2128;--border:#30363d;
+  --accent:#e94560;--correct:#3fb950;--wrong:#f85149;--text:#e6edf3;
+  --muted:#8b949e;--nav-h:54px;--filter-h:44px;--progress-bg:#21262d;
+  --star-active:#f0e040;--badge-bg:rgba(233,69,96,.13);--badge-border:rgba(233,69,96,.3);
+  --got-it:#3fb950;--missed:#f85149;--shadow:rgba(0,0,0,.4);
+  --written-bg:rgba(99,179,237,.07);--written-border:#4a9eca;
+  --written-accent:#63b3ed;--written-label:#90cdf4;
+}
+
+/* ── Theme: light ──────────────────────────────────────────────────────── */
+body.theme-light{
+  --bg:#f6f8fa;--surface:#ffffff;--card:#ffffff;--border:#d0d7de;
+  --accent:#0969da;--correct:#1a7f37;--wrong:#cf222e;--text:#1f2328;
+  --muted:#656d76;--progress-bg:#eaeef2;--badge-bg:rgba(9,105,218,.1);
+  --badge-border:rgba(9,105,218,.3);--got-it:#1a7f37;--missed:#cf222e;
+  --shadow:rgba(0,0,0,.1);
+  --written-bg:rgba(9,105,218,.06);--written-border:#0969da;
+  --written-accent:#0550ae;--written-label:#0969da;
+}
+
+/* ── Theme: sepia ──────────────────────────────────────────────────────── */
+body.theme-sepia{
+  --bg:#f4ecd8;--surface:#fdf6e3;--card:#fdf6e3;--border:#d4c5a0;
+  --accent:#a0522d;--correct:#3a7a3a;--wrong:#b22222;--text:#433422;
+  --muted:#8a7060;--progress-bg:#e8ddc0;--badge-bg:rgba(160,82,45,.1);
+  --badge-border:rgba(160,82,45,.3);--got-it:#3a7a3a;--missed:#b22222;
+  --shadow:rgba(100,60,20,.15);
+  --written-bg:rgba(100,60,200,.06);--written-border:#7050a0;
+  --written-accent:#5a3a8a;--written-label:#6a4a9a;
+}
+
+/* ── Theme: high-contrast ──────────────────────────────────────────────── */
+body.theme-hc{
+  --bg:#000000;--surface:#000000;--card:#000000;--border:#ffffff;
+  --accent:#ffff00;--correct:#00ff00;--wrong:#ff4444;--text:#ffffff;
+  --muted:#cccccc;--progress-bg:#333;--badge-bg:rgba(255,255,0,.15);
+  --badge-border:rgba(255,255,0,.6);--got-it:#00ff00;--missed:#ff4444;
+  --shadow:none;font-size:17px;
+  --written-bg:rgba(100,180,255,.08);--written-border:#60b0ff;
+  --written-accent:#80c8ff;--written-label:#60b0ff;
+}
+
+/* ── Fixed header wrapper ──────────────────────────────────────────────── */
+#fixed-header{position:fixed;top:0;left:0;right:0;z-index:200}
+
+/* ── Nav ───────────────────────────────────────────────────────────────── */
+#top-nav{
+  min-height:var(--nav-h);
+  background:rgba(13,17,23,.93);
+  backdrop-filter:blur(20px) saturate(160%);
+  -webkit-backdrop-filter:blur(20px) saturate(160%);
+  border-bottom:1px solid rgba(48,54,61,.6);
+  box-shadow:0 2px 24px rgba(0,0,0,.45);
+  display:flex;flex-wrap:wrap;align-items:center;padding:7px 18px;gap:8px;
+}
+body.theme-light #top-nav{
+  background:rgba(246,248,250,.96);border-bottom-color:rgba(208,215,222,.9);
+  box-shadow:0 2px 14px rgba(0,0,0,.08);
+}
+body.theme-sepia  #top-nav{background:rgba(244,236,216,.96);border-bottom-color:rgba(212,197,160,.8)}
+body.theme-hc #top-nav{background:#000;border-bottom:2px solid #fff;box-shadow:none}
+
+.nav-title{
+  font-weight:700;color:var(--accent);flex-shrink:0;font-size:.9rem;
+  letter-spacing:-.01em;padding-right:12px;
+  border-right:1px solid rgba(255,255,255,.1);margin-right:2px;
+}
+body.theme-light .nav-title{border-right-color:rgba(0,0,0,.12)}
+body.theme-sepia  .nav-title{border-right-color:rgba(0,0,0,.15)}
+body.theme-hc .nav-title{border-right-color:#fff}
+
+.nav-sections{
+  display:flex;align-items:center;gap:4px;flex:1;overflow-x:auto;
+  white-space:nowrap;padding:2px 0;min-width:0;scrollbar-width:none;
+}
+.nav-sections::-webkit-scrollbar{display:none}
+
+.nav-btn{
+  padding:4px 11px;border-radius:20px;
+  background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.09);
+  color:var(--muted);font-size:.73rem;cursor:pointer;flex-shrink:0;
+  transition:all .18s;text-decoration:none;
+  display:inline-flex;align-items:center;gap:5px;white-space:nowrap;
+}
+.nav-btn:hover{background:rgba(233,69,96,.13);border-color:rgba(233,69,96,.4);color:var(--accent)}
+body.theme-light .nav-btn{background:rgba(0,0,0,.05);border-color:rgba(0,0,0,.09)}
+body.theme-light .nav-btn:hover{background:rgba(9,105,218,.09);border-color:rgba(9,105,218,.35);color:var(--accent)}
+body.theme-sepia  .nav-btn{background:rgba(0,0,0,.04);border-color:rgba(0,0,0,.1)}
+body.theme-hc .nav-btn{background:transparent;border-color:#555;color:#ccc}
+body.theme-hc .nav-btn:hover{border-color:#ffff00;color:#ffff00}
+
+.nav-btn .sec-prog{
+  font-size:.62rem;background:rgba(233,69,96,.18);
+  color:var(--accent);padding:1px 5px;border-radius:10px;font-weight:600;
+}
+
+.nav-controls{display:flex;align-items:center;gap:5px;flex-shrink:0;margin-left:auto}
+
+/* ── Mode button group ─────────────────────────────────────────────────── */
+.mode-btns{
+  display:flex;gap:2px;background:rgba(255,255,255,.06);
+  border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:3px;flex-shrink:0;
+}
+body.theme-light .mode-btns{background:rgba(0,0,0,.05);border-color:rgba(0,0,0,.1)}
+body.theme-sepia  .mode-btns{background:rgba(0,0,0,.04);border-color:rgba(0,0,0,.12)}
+body.theme-hc .mode-btns{border-color:#fff;background:transparent}
+
+.mode-btn{
+  padding:5px 11px;border:none;border-radius:7px;
+  background:transparent;color:var(--muted);
+  font-size:.75rem;cursor:pointer;transition:all .18s;white-space:nowrap;
+}
+.mode-btn:hover:not(.active){background:rgba(255,255,255,.08);color:var(--text)}
+.mode-btn.active{
+  background:var(--accent);color:#fff;font-weight:600;
+  box-shadow:0 2px 10px rgba(233,69,96,.5);
+}
+body.theme-light .mode-btn:hover:not(.active){background:rgba(0,0,0,.06)}
+body.theme-light .mode-btn.active{box-shadow:0 2px 8px rgba(9,105,218,.3)}
+body.theme-hc .mode-btn.active{box-shadow:none;outline:1px solid #ffff00}
+
+/* ── Nav icon buttons (stats / print / reset) ──────────────────────────── */
+.nav-icon-btn{
+  padding:5px 10px;border-radius:8px;
+  background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.09);
+  color:var(--muted);font-size:.76rem;cursor:pointer;
+  transition:all .18s;white-space:nowrap;flex-shrink:0;
+}
+.nav-icon-btn:hover{background:rgba(233,69,96,.1);border-color:rgba(233,69,96,.3);color:var(--accent)}
+body.theme-light .nav-icon-btn{background:rgba(0,0,0,.05);border-color:rgba(0,0,0,.08);color:var(--muted)}
+body.theme-light .nav-icon-btn:hover{background:rgba(9,105,218,.08);border-color:rgba(9,105,218,.3);color:var(--accent)}
+body.theme-sepia  .nav-icon-btn{background:rgba(0,0,0,.04);border-color:rgba(0,0,0,.1);color:var(--muted)}
+body.theme-hc .nav-icon-btn{background:transparent;border-color:#aaa;color:#ccc}
+#restart-btn.nav-icon-btn{color:var(--accent);border-color:rgba(233,69,96,.25)}
+#restart-btn.nav-icon-btn:hover{background:rgba(233,69,96,.1);border-color:var(--accent);color:var(--accent)}
+#reset-btn.nav-icon-btn{color:var(--wrong);border-color:rgba(248,81,73,.3)}
+#reset-btn.nav-icon-btn:hover{background:rgba(248,81,73,.12);border-color:var(--wrong);color:var(--wrong)}
+
+/* ── Theme selector ────────────────────────────────────────────────────── */
+.theme-select{
+  padding:5px 8px;border-radius:8px;
+  background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.09);
+  color:var(--muted);font-size:.76rem;cursor:pointer;transition:all .18s;
+}
+.theme-select:hover{border-color:rgba(233,69,96,.3);color:var(--text)}
+body.theme-light .theme-select{background:rgba(0,0,0,.05);border-color:rgba(0,0,0,.08);color:var(--text)}
+body.theme-sepia  .theme-select{background:rgba(0,0,0,.04);border-color:rgba(0,0,0,.1);color:var(--text)}
+body.theme-hc .theme-select{background:#000;border-color:#fff;color:#fff}
+
+/* ── Stats panel ───────────────────────────────────────────────────────── */
+#stats-panel{
+  background:rgba(13,17,23,.96);
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  border-bottom:1px solid rgba(48,54,61,.5);padding:12px 18px;display:none;
+}
+#stats-panel.open{display:block}
+body.theme-light #stats-panel{background:rgba(246,248,250,.98);border-bottom-color:rgba(208,215,222,.7)}
+body.theme-sepia  #stats-panel{background:rgba(244,236,216,.98);border-bottom-color:rgba(212,197,160,.6)}
+body.theme-hc #stats-panel{background:#000;border-bottom:1px solid #fff}
+.stats-grid{display:flex;gap:24px;flex-wrap:wrap;font-size:.85rem}
+.stat-item{display:flex;flex-direction:column;align-items:center}
+.stat-val{font-size:1.35rem;font-weight:700;color:var(--accent)}
+.stat-label{color:var(--muted);font-size:.7rem;margin-top:2px}
+
+/* ── Filter bar ────────────────────────────────────────────────────────── */
+#filter-bar{
+  background:rgba(10,14,20,.9);
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  border-bottom:1px solid rgba(48,54,61,.4);
+  display:flex;gap:6px;padding:8px 18px;overflow-x:auto;white-space:nowrap;
+  scrollbar-width:none;
+}
+#filter-bar::-webkit-scrollbar{display:none}
+body.theme-light #filter-bar{background:rgba(240,244,248,.93);border-bottom-color:rgba(208,215,222,.6)}
+body.theme-sepia  #filter-bar{background:rgba(238,228,206,.93);border-bottom-color:rgba(212,197,160,.5)}
+body.theme-hc #filter-bar{background:#000;border-bottom:1px solid #fff}
+
+.filter-btn{
+  padding:5px 14px;border-radius:20px;
+  background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.09);
+  color:var(--muted);font-size:.76rem;cursor:pointer;flex-shrink:0;
+  transition:all .18s;white-space:nowrap;
+}
+.filter-btn:hover:not(.active){
+  background:rgba(233,69,96,.08);border-color:rgba(233,69,96,.3);color:var(--text);
+}
+.filter-btn.active{
+  background:var(--accent);border-color:var(--accent);color:#fff;font-weight:600;
+  box-shadow:0 2px 10px rgba(233,69,96,.4);
+}
+body.theme-light .filter-btn{background:rgba(0,0,0,.04);border-color:rgba(0,0,0,.08);color:var(--muted)}
+body.theme-light .filter-btn:hover:not(.active){background:rgba(9,105,218,.07);border-color:rgba(9,105,218,.25)}
+body.theme-light .filter-btn.active{box-shadow:0 2px 10px rgba(9,105,218,.25)}
+body.theme-sepia  .filter-btn{background:rgba(0,0,0,.04);border-color:rgba(0,0,0,.1);color:var(--muted)}
+body.theme-hc .filter-btn{background:transparent;border-color:#555;color:#ccc}
+body.theme-hc .filter-btn.active{background:#ffff00;color:#000;border-color:#ffff00;box-shadow:none}
+/* Retry button — right-aligned, accent tinted, hidden by default */
+#retry-btn{
+  display:none;margin-left:auto;
+  background:rgba(233,69,96,.1);border-color:rgba(233,69,96,.35);color:var(--accent);font-weight:600;
+}
+#retry-btn:hover{background:rgba(233,69,96,.22);border-color:var(--accent)}
+body.theme-light #retry-btn{background:rgba(9,105,218,.08);border-color:rgba(9,105,218,.3)}
+body.theme-hc    #retry-btn{border-color:var(--accent);color:var(--accent)}
+
+/* ── Main layout ───────────────────────────────────────────────────────── */
+main{max-width:var(--content-width,880px);margin:0 auto;padding:120px 16px 80px;
+     font-size:var(--main-fs,15px)}
+/* ^^ top padding + scroll-margin set precisely by JS updateMainPadding() */
+.exam-section{scroll-margin-top:120px;margin-bottom:48px}
+.section-title{font-size:1.05rem;font-weight:700;color:var(--accent);
+  border-bottom:1px solid var(--border);padding-bottom:8px;margin-bottom:14px;
+  display:flex;align-items:center;gap:10px}
+.q-count{font-weight:400;font-size:.82rem;color:var(--muted)}
+.section-progress-bar{flex:1;height:6px;border-radius:3px;
+  background:var(--progress-bg);overflow:hidden;max-width:120px}
+.section-progress-fill{height:100%;background:var(--correct);
+  border-radius:3px;transition:width .3s}
+
+/* ── Question card — article flow (no boxes, typography-driven) ─────────── */
+.qcard{
+  background:transparent;border:none;border-radius:0;
+  border-bottom:1px solid rgba(48,54,61,.28);
+  padding:30px 0 26px;margin-bottom:0;
+  transition:opacity .2s;
+}
+body.theme-light .qcard{border-bottom-color:rgba(208,215,222,.45)}
+body.theme-sepia  .qcard{border-bottom-color:rgba(212,197,160,.5)}
+body.theme-hc .qcard{border-bottom:1px solid #444}
+.qcard:last-child{border-bottom:none}
+.qcard.filtered-out{display:none}
+/* Starred: left accent stripe */
+.qcard.starred-card{padding-left:14px;border-left:3px solid var(--star-active)}
+
+.qcard-header{display:flex;align-items:center;gap:8px;margin-bottom:10px;flex-wrap:wrap}
+.q-num{
+  font-size:.62rem;color:var(--accent);font-weight:700;
+  letter-spacing:.1em;text-transform:uppercase;flex-shrink:0;
+  opacity:.75;
+}
+.qcard-badges{display:flex;gap:5px;flex:1;flex-wrap:wrap}
+.topic-badge,.type-badge,.img-needed-badge{padding:2px 8px;border-radius:12px;
+  font-size:.63rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em}
+.topic-badge{background:var(--badge-bg);border:1px solid var(--badge-border);color:var(--accent)}
+.type-badge{background:rgba(100,100,200,.1);border:1px solid rgba(100,100,200,.25);color:#9898e8}
+.img-needed-badge{background:rgba(240,180,40,.1);border:1px solid rgba(240,180,40,.25);
+  color:#c09000;cursor:help}
+.star-btn{background:none;border:none;cursor:pointer;font-size:1.05rem;
+  color:var(--muted);padding:2px 4px;line-height:1;flex-shrink:0;
+  transition:color .15s,transform .15s}
+.star-btn:hover{color:var(--star-active);transform:scale(1.2)}
+.star-btn.starred{color:var(--star-active)}
+.q-image{margin:12px 0;border-radius:6px;overflow:hidden;border:1px solid var(--border)}
+.q-image img{max-width:100%;display:block}
+/* Question text — large, readable, the anchor of each item */
+.q-text{
+  font-size:1.05em;line-height:1.75;margin-bottom:14px;direction:ltr;
+  color:var(--text);font-weight:400;
+}
+
+/* ── Options — clean, minimal ────────────────────────────────────────────── */
+.opts{list-style:none;margin-bottom:4px}
+.opt{
+  padding:7px 12px;margin:3px 0;border-radius:6px;
+  background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);
+  font-size:.92em;cursor:pointer;transition:all .15s;direction:ltr;
+  color:var(--text);
+}
+body.theme-light .opt{background:rgba(0,0,0,.025);border-color:rgba(0,0,0,.06)}
+body.theme-sepia  .opt{background:rgba(0,0,0,.03);border-color:rgba(0,0,0,.08)}
+body.theme-hc .opt{background:transparent;border-color:#333}
+body.mode-test .opt:not(.answered-opt):hover{
+  border-color:var(--accent);background:rgba(233,69,96,.07)}
+.opt.opt-correct{
+  background:rgba(63,185,80,.1);border-color:rgba(63,185,80,.3);
+  color:var(--correct);font-weight:600}
+.opt.opt-wrong{
+  background:rgba(248,81,73,.1);border-color:rgba(248,81,73,.3);color:var(--wrong)}
+body.mode-study .opt.is-correct{
+  background:rgba(63,185,80,.09);border-color:rgba(63,185,80,.28);color:var(--correct)}
+
+/* ── Answer block — flows as natural continuation of question ──────────── */
+.answer-block{margin-top:18px;padding-top:14px;border-top:1px solid rgba(48,54,61,.2);
+  display:none}
+body.theme-light .answer-block{border-top-color:rgba(208,215,222,.4)}
+.answer-block.visible{display:block}
+
+/* Answer reveal — just a label, no pill/chip */
+.answer-reveal{
+  display:inline-flex;align-items:center;gap:6px;
+  font-size:.85rem;font-weight:700;
+  color:var(--correct);margin-bottom:14px;
+  padding:0;background:none;border:none;letter-spacing:.02em;
+}
+
+/* Section label above explanation */
+.exp-label{
+  font-size:.6rem;color:var(--accent);letter-spacing:.12em;
+  text-transform:uppercase;margin-bottom:8px;opacity:.65;
+}
+
+/* Explanation — Amiri, full-width prose, no left border */
+.explanation-ar{
+  font-family:var(--arabic-font);
+  line-height:2.25;font-size:1.05em;
+  color:var(--exp-color);
+  direction:rtl;padding:0;border:none;
+  text-align:justify;text-align-last:right;
+}
+body.theme-light .explanation-ar{--exp-color:rgba(31,35,40,.86)}
+body.theme-sepia  .explanation-ar{--exp-color:rgba(67,52,34,.85)}
+body.theme-hc .explanation-ar{--exp-color:#fff}
+.explanation-ar p{margin-bottom:.65em}
+.explanation-ar p:last-child{margin-bottom:0}
+
+/* ── Show buttons ────────────────────────────────────────────────────────── */
+.show-exp-btn,.show-answer-btn{
+  display:none;margin-top:12px;padding:6px 16px;
+  border-radius:6px;background:transparent;
+  border:1px solid rgba(255,255,255,.12);
+  color:var(--muted);cursor:pointer;font-size:.84rem;transition:all .16s;
+}
+.show-exp-btn:hover,.show-answer-btn:hover{border-color:var(--accent);color:var(--accent)}
+body.theme-light .show-exp-btn,body.theme-light .show-answer-btn{border-color:rgba(0,0,0,.15)}
+/* Show Explanation only after the question has been answered */
+body.mode-test .qcard[data-answered] .show-exp-btn{display:inline-block}
+body.mode-test .show-answer-btn{display:inline-block}
+
+/* ── Self-assess (written) ───────────────────────────────────────────────── */
+.self-assess{margin-top:14px;display:flex;gap:8px}
+.got-it-btn{padding:5px 14px;border-radius:6px;background:transparent;
+  border:1px solid rgba(63,185,80,.4);color:var(--got-it);cursor:pointer;font-size:.82rem;
+  transition:background .15s}
+.missed-btn{padding:5px 14px;border-radius:6px;background:transparent;
+  border:1px solid rgba(248,81,73,.4);color:var(--missed);cursor:pointer;font-size:.82rem;
+  transition:background .15s}
+.got-it-btn:hover{background:rgba(63,185,80,.12)}
+.missed-btn:hover{background:rgba(248,81,73,.12)}
+
+/* ── Matching table ─────────────────────────────────────────────────────── */
+.matching-table{width:100%;border-collapse:collapse;margin:10px 0;font-size:.9rem}
+.matching-table td{padding:6px 10px;vertical-align:middle}
+.match-left{color:var(--text);width:55%}
+.match-right{width:45%}
+.match-select{width:100%;padding:5px 8px;border-radius:6px;
+  background:var(--surface);border:1px solid var(--border);color:var(--text);
+  font-size:.88rem;cursor:pointer}
+.match-row.match-correct .match-left{color:var(--correct)}
+.match-row.match-wrong   .match-left{color:var(--wrong)}
+.check-match-btn{padding:7px 15px;border-radius:6px;background:var(--surface);
+  border:1px solid var(--border);color:var(--text);cursor:pointer;font-size:.86rem}
+.check-match-btn:hover{border-color:var(--accent)}
+
+/* (reset-btn styling now in .nav-icon-btn + #reset-btn.nav-icon-btn override) */
+
+/* ── Responsive / Mobile ────────────────────────────────────────────────── */
+/* Tablet: nav scrollable row (same nav behavior as mobile) */
+@media(min-width:601px) and (max-width:1024px){
+  #top-nav{
+    flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;
+    scrollbar-width:none;touch-action:pan-x}
+  #top-nav::-webkit-scrollbar{display:none}
+}
+@media(max-width:600px){
+  /* Nav: single scrollable row — no wrapping, no page overflow */
+  #top-nav{
+    flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;
+    padding:5px 10px;gap:4px;scrollbar-width:none;min-height:var(--nav-h)}
+  #top-nav::-webkit-scrollbar{display:none}
+  .nav-title{font-size:.78rem;white-space:nowrap;flex-shrink:0}
+  .nav-sections{flex-shrink:1;min-width:0}
+  .nav-controls{flex-shrink:0;gap:4px}
+  .mode-btn{padding:4px 7px;font-size:.69rem;white-space:nowrap}
+  .nav-btn{font-size:.7rem;padding:3px 7px}
+  .nav-icon-btn{padding:4px 8px;font-size:.72rem}
+
+  /* Content */
+  .qcard{padding:22px 0 18px}
+  main{padding:12px 14px 40px}
+  .stats-grid{gap:12px}
+  .settings-row{gap:14px}
+  .setting-block{min-width:110px}
+}
+
+/* ── Written answer block — English LTR, clean readable font ─────────────── */
+.written-answer{
+  margin-bottom:0;padding:0;background:none;border:none;border-radius:0;
+  direction:ltr;
+}
+.w-part{
+  display:flex;gap:10px;align-items:baseline;margin-bottom:.85em;
+  direction:ltr;  /* numbers always on the LEFT */
+}
+.w-part:last-child{margin-bottom:0}
+.w-label{
+  font-family:'Segoe UI',system-ui,sans-serif;
+  font-size:1em;font-weight:700;color:var(--written-label);
+  flex-shrink:0;min-width:24px;
+}
+.w-text{
+  font-family:'Segoe UI',system-ui,sans-serif;
+  font-size:1.06em;line-height:1.8;
+  color:var(--text);font-weight:400;
+  text-align:left;
+}
+.w-text strong{color:var(--written-label);font-weight:700}
+/* Intro line — same readability as numbered items, just slightly smaller */
+.w-intro .w-text{font-size:.97em}
+
+/* ── Rich explanation formatting ────────────────────────────────────────── */
+.exp-h{
+  font-family:var(--arabic-font);font-size:.95em;font-weight:700;
+  color:var(--accent);margin:10px 0 4px;padding:0;border:none;
+  display:block;letter-spacing:-.01em;
+}
+.exp-em{font-style:italic;color:var(--written-accent);font-weight:400}
+.exp-q{
+  display:block;border-right:3px solid rgba(233,69,96,.35);
+  padding:4px 10px 4px 0;margin:8px 0;
+  font-style:normal;opacity:.82;color:var(--text);
+  text-align:justify;text-align-last:right;
+}
+body.theme-light .exp-q,body.theme-sepia .exp-q{border-right-color:rgba(9,105,218,.3)}
+.exp-term{
+  background:rgba(233,69,96,.12);color:var(--accent);
+  border-radius:3px;padding:0 4px;font-weight:600;
+  font-style:normal;
+}
+body.theme-light .exp-term{background:rgba(9,105,218,.1);color:var(--accent)}
+.opt-lbl{
+  display:inline-block;margin-top:.45em;
+  color:var(--written-accent);font-size:.88em;font-weight:700;
+  font-family:'Courier New',monospace;letter-spacing:.01em;
+}
+.exp-table-wrap{overflow-x:auto;margin:10px 0}
+.exp-table{
+  border-collapse:collapse;width:100%;font-size:.86em;
+  font-family:var(--arabic-font);text-align:start;
+}
+.exp-table th,.exp-table td{
+  border:1px solid rgba(255,255,255,.13);padding:5px 10px;vertical-align:top;
+}
+.exp-table thead tr{background:rgba(255,255,255,.07);font-weight:700}
+.exp-table tbody tr:nth-child(even){background:rgba(255,255,255,.03)}
+body.theme-light .exp-table th,body.theme-light .exp-table td{border-color:rgba(0,0,0,.11)}
+body.theme-light .exp-table thead tr{background:rgba(9,105,218,.07)}
+body.theme-light .exp-table tbody tr:nth-child(even){background:rgba(0,0,0,.025)}
+body.theme-sepia  .exp-table th,body.theme-sepia  .exp-table td{border-color:rgba(139,109,56,.18)}
+body.theme-sepia  .exp-table thead tr{background:rgba(139,109,56,.09)}
+body.theme-hc .exp-table th,body.theme-hc .exp-table td{border-color:#888}
+body.theme-hc .exp-table thead tr{background:#333;color:#fff}
+
+/* ── Settings panel ──────────────────────────────────────────────────────── */
+#settings-panel{
+  background:rgba(13,17,23,.97);
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  border-bottom:1px solid rgba(48,54,61,.5);padding:12px 18px;display:none;
+}
+#settings-panel.open{display:block}
+body.theme-light #settings-panel{background:rgba(246,248,250,.98);border-bottom-color:rgba(208,215,222,.7)}
+body.theme-sepia  #settings-panel{background:rgba(244,236,216,.98);border-bottom-color:rgba(212,197,160,.6)}
+body.theme-hc #settings-panel{background:#000;border-bottom:1px solid #fff}
+.settings-row{display:flex;flex-wrap:wrap;gap:20px;align-items:flex-start}
+.setting-block{display:flex;flex-direction:column;gap:6px;min-width:130px}
+.setting-label{font-size:.65rem;color:var(--accent);letter-spacing:.1em;text-transform:uppercase;opacity:.75}
+/* Font-size step buttons */
+.fs-btns{display:flex;gap:3px}
+.fs-btn{
+  padding:4px 9px;border-radius:6px;border:1px solid rgba(255,255,255,.1);
+  background:rgba(255,255,255,.05);color:var(--muted);cursor:pointer;
+  font-size:var(--_fs,12px);transition:all .16s;line-height:1;
+}
+.fs-btn[data-fs="s"]{--_fs:11px}
+.fs-btn[data-fs="m"]{--_fs:13px}
+.fs-btn[data-fs="l"]{--_fs:15px}
+.fs-btn[data-fs="xl"]{--_fs:17px}
+.fs-btn.active,.fs-btn:hover{background:rgba(233,69,96,.15);border-color:rgba(233,69,96,.4);color:var(--accent)}
+body.theme-light .fs-btn{background:rgba(0,0,0,.04);border-color:rgba(0,0,0,.1)}
+/* Width slider */
+.sett-range{
+  width:100%;accent-color:var(--accent);cursor:pointer;
+  height:4px;border-radius:2px;
+}
+.sett-val{font-size:.7rem;color:var(--muted)}
+/* Font select */
+.sett-select{
+  padding:4px 8px;border-radius:6px;background:rgba(255,255,255,.06);
+  border:1px solid rgba(255,255,255,.09);color:var(--muted);
+  font-size:.76rem;cursor:pointer;
+}
+body.theme-light .sett-select{background:rgba(0,0,0,.05);border-color:rgba(0,0,0,.08);color:var(--text)}
+/* Color swatches */
+.color-swatches{display:flex;gap:6px;flex-wrap:wrap}
+.color-sw{
+  width:22px;height:22px;border-radius:50%;cursor:pointer;
+  border:2px solid transparent;transition:all .16s;flex-shrink:0;
+}
+.color-sw.active{border-color:var(--accent);box-shadow:0 0 0 2px rgba(233,69,96,.3)}
+.color-sw:hover{transform:scale(1.15)}
+
+/* ── Marker mode ─────────────────────────────────────────────────────────── */
+body.mode-marker .opt.is-correct{
+  background:rgba(255,230,0,.22);border:2px solid #ffe000 !important;
+  color:#ffe000;font-weight:700;
+  box-shadow:0 0 0 2px rgba(255,230,0,.12)}
+body.mode-marker .opt:not(.is-correct){opacity:.45}
+/* Test mode: hide explanation by default — only show after clicking Show Explanation */
+body.mode-test .explanation-ar:not(.exp-revealed),
+body.mode-test .exp-label:not(.exp-revealed){display:none}
+
+body.mode-marker .answer-block{display:block}
+body.mode-marker .explanation-ar,
+body.mode-marker .exp-label{display:none!important}
+body.mode-marker .show-exp-btn,
+body.mode-marker .show-answer-btn,
+body.mode-marker .self-assess{display:none!important}
+/* Study mode: always show answer blocks (JS also handles this) */
+/* Study mode: auto-show all answer blocks (MCQ + written) */
+body.mode-study .qcard .answer-block{display:block}
+
+/* ── Ask GPT button ────────────────────────────────────────────────────── */
+.gpt-btn{
+  font-size:.78rem;padding:3px 10px;border-radius:5px;
+  background:#10a37f;color:#fff;border:none;
+  cursor:pointer;margin-top:8px;opacity:.85;transition:opacity .15s;display:inline-block;
+}
+.gpt-btn:hover{opacity:1}
+.gpt-toast{
+  position:fixed;bottom:22px;right:22px;z-index:9999;
+  background:rgba(30,30,30,.95);color:#fff;padding:8px 18px;
+  border-radius:8px;font-size:.85rem;border-left:3px solid #10a37f;
+  animation:fadeInToast .2s ease;pointer-events:none;
+}
+@keyframes fadeInToast{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── Print protection — blank page on any print attempt ─────────────────── */
+@media print{
+  html,body{display:none!important;visibility:hidden!important}
+}
+
+/* ── Annotate system ─────────────────────────────────────────────────────── */
+.qcard{position:relative;overflow:hidden}
+.qcard-canvas{
+  position:absolute;top:0;left:0;width:100%;
+  pointer-events:none;z-index:10;border-radius:inherit;touch-action:none
+}
+body.mode-annotate .qcard-canvas{pointer-events:auto;cursor:crosshair}
+body.mode-annotate.tool-erase .qcard-canvas{cursor:cell}
+body.mode-annotate.tool-pan .qcard-canvas{cursor:grab}
+#annotate-bar{
+  display:none;position:fixed;bottom:20px;left:50%;transform:translateX(-50%);
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:40px;padding:8px 18px;gap:10px;align-items:center;
+  z-index:500;box-shadow:0 4px 24px rgba(0,0,0,.35);backdrop-filter:blur(12px)
+}
+body.mode-annotate #annotate-bar{display:flex}
+.ann-tool-btn{
+  background:none;border:1.5px solid transparent;border-radius:50%;
+  width:36px;height:36px;font-size:16px;cursor:pointer;color:var(--text);
+  transition:background .15s,border-color .15s
+}
+.ann-tool-btn:hover{background:var(--border)}
+.ann-tool-btn.active{background:var(--accent);border-color:var(--accent);color:#fff}
+.ann-sep{width:1px;height:24px;background:var(--border);flex-shrink:0}
+.ann-color{
+  width:22px;height:22px;border-radius:50%;border:2px solid transparent;
+  cursor:pointer;transition:transform .15s;flex-shrink:0
+}
+.ann-color.active{border-color:var(--text);transform:scale(1.2)}
+.ann-width{width:80px;accent-color:var(--accent);cursor:pointer}
+.ann-action-btn{
+  background:none;border:1.5px solid var(--border);border-radius:8px;
+  padding:4px 10px;font-size:12px;color:var(--muted);cursor:pointer
+}
+.ann-action-btn:hover{border-color:var(--accent);color:var(--accent)}
+.ann-clear-btn:hover{border-color:#e74c3c!important;color:#e74c3c!important}
+.sticky-note-btn{
+  background:none;border:none;cursor:pointer;font-size:14px;
+  opacity:.5;transition:opacity .15s;margin-left:4px;padding:2px
+}
+.sticky-note-btn:hover,.sticky-note-btn.has-note{opacity:1}
+.sticky-note{
+  display:none;position:absolute;right:0;top:0;width:220px;height:170px;
+  background:#fffde7;border:1px solid #f0e060;border-radius:8px;z-index:50;
+  box-shadow:3px 3px 12px rgba(0,0,0,.22);flex-direction:column;overflow:hidden;
+  resize:both;min-width:160px;min-height:120px;max-width:480px;max-height:480px
+}
+.note-mini-bar{display:flex;align-items:center;gap:3px;flex:1;padding:1px 3px;overflow:hidden}
+.nc{width:13px;height:13px;border-radius:50%;cursor:pointer;border:1.5px solid rgba(0,0,0,.2);flex-shrink:0;transition:transform .1s}
+.nc.act{border-color:#333;transform:scale(1.2)}
+.nw{width:44px;height:3px;cursor:pointer;accent-color:#555;flex-shrink:0}
+.ne,.nu{background:none;border:none;cursor:pointer;font-size:12px;padding:1px 3px;color:#333;line-height:1;border-radius:2px}
+.ne:hover,.nu:hover{background:rgba(0,0,0,.12)}
+.ne.erasing{background:rgba(0,0,0,.18);outline:1px solid #555}
+.sticky-note.visible{display:flex}
+.sticky-note-header{
+  background:#f9e400;display:flex;justify-content:flex-end;padding:3px 6px
+}
+.note-close-btn{background:none;border:none;cursor:pointer;font-size:14px;color:#555;line-height:1}
+.sticky-canvas{flex:1;width:100%;cursor:crosshair;touch-action:none;display:block}
+.ann-sett-btn{
+  padding:4px 9px;border-radius:6px;border:1px solid rgba(255,255,255,.1);
+  background:rgba(255,255,255,.05);color:var(--muted);cursor:pointer;
+  font-size:.76rem;transition:all .16s;line-height:1
+}
+.ann-sett-btn.active{background:rgba(233,69,96,.15);border-color:rgba(233,69,96,.4);color:var(--accent)}
+body.theme-light .ann-sett-btn{background:rgba(0,0,0,.04);border-color:rgba(0,0,0,.1)}
+/* === CUSTOM SELECTION POPUP === */
+#sel-popup{
+  display:none;position:fixed;z-index:700;
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:28px;padding:5px 12px;gap:6px;align-items:center;
+  box-shadow:0 4px 20px rgba(0,0,0,.45);backdrop-filter:blur(14px);
+  transform:translateX(-50%);pointer-events:auto;
+  user-select:none;-webkit-user-select:none;
+}
+#sel-popup.visible{display:flex}
+.sel-hl-dot{
+  width:20px;height:20px;border-radius:50%;
+  cursor:pointer;border:2px solid transparent;flex-shrink:0;
+  transition:transform .15s,border-color .12s;
+}
+.sel-hl-dot:hover{transform:scale(1.3)}
+.sel-sep2{width:1px;height:18px;background:var(--border);flex-shrink:0}
+.sel-btn{
+  background:none;border:none;cursor:pointer;font-size:13px;
+  color:var(--muted);padding:2px 7px;border-radius:6px;
+  transition:all .15s;white-space:nowrap;
+}
+.sel-btn:hover{background:var(--border);color:var(--text)}
+.sel-remove-btn:hover{color:#e74c3c!important}
+mark.hl-yellow{background:rgba(255,220,0,.45);color:inherit;border-radius:2px}
+mark.hl-green{background:rgba(76,175,80,.38);color:inherit;border-radius:2px}
+mark.hl-blue{background:rgba(33,150,243,.35);color:inherit;border-radius:2px}
+mark.hl-pink{background:rgba(233,30,99,.30);color:inherit;border-radius:2px}
+</style>
+</head>
+<body class="mode-study theme-dark">
+
+<div id="fixed-header">
+<nav id="top-nav">
+  <span class="nav-title">❤️ CVS Physiology — End Semester 2021/2022 (Batch 62)</span>
+  <div class="nav-sections"><a class="nav-btn" id="navbtn-cvs_end_semester_20212022_pdf" href="#section-cvs_end_semester_20212022_pdf">CVS end semester 2021202…<span class="sec-prog">0/39</span></a></div>
+  <div class="nav-controls">
+    <button id="sett-toggle" class="nav-icon-btn" onclick="toggleSettings()">&#9881;&#65039; Settings</button>
+    <button id="stats-toggle" class="nav-icon-btn" onclick="toggleStats()">&#128200; Stats</button>
+    <div class="mode-btns">
+      <button class="mode-btn active" id="mode-btn-study" onclick="setMode('study')">&#128214; Study</button>
+      <button class="mode-btn" id="mode-btn-test" onclick="setMode('test')">&#9999;&#65039; Test</button>
+      <button class="mode-btn" id="mode-btn-marker" onclick="setMode('marker')">&#128397; Marker</button>
+      <button class="mode-btn" id="mode-btn-annotate" onclick="setMode('annotate')">&#9998; Annotate</button>
+    </div>
+    <select id="theme-select" class="theme-select" onchange="changeTheme(this)" title="Theme">
+      <option value="dark">&#127769; Dark</option>
+      <option value="light">&#9728;&#65039; Light</option>
+      <option value="sepia">&#128220; Sepia</option>
+      <option value="hc">&#11035; H-Contrast</option>
+    </select>
+    <button id="fs-btn" class="nav-icon-btn" onclick="toggleFullscreen()" title="Fullscreen">&#x26F6; Fullscreen</button>
+    <button id="restart-btn" class="nav-icon-btn" onclick="restartExam()" title="Clear answers only — keeps settings, stars, theme">&#9654; New Attempt</button>
+    <button id="reset-btn" class="nav-icon-btn" onclick="resetProgress()" title="Clear everything including settings">&#8635; Full Reset</button>
+  </div>
+</nav>
+
+<div id="stats-panel">
+  <div class="stats-grid">
+    <div class="stat-item"><span class="stat-val" id="stat-total">0</span><span class="stat-label">Total</span></div>
+    <div class="stat-item"><span class="stat-val" id="stat-ans">0</span><span class="stat-label">Answered</span></div>
+    <div class="stat-item"><span class="stat-val" id="stat-correct">0</span><span class="stat-label">Correct</span></div>
+    <div class="stat-item"><span class="stat-val" id="stat-wrong">0</span><span class="stat-label">Wrong</span></div>
+    <div class="stat-item"><span class="stat-val" id="stat-pct">0%</span><span class="stat-label">Done</span></div>
+  </div>
+</div>
+
+<div id="settings-panel">
+  <div class="settings-row">
+    <div class="setting-block">
+      <div class="setting-label">Font Size</div>
+      <div class="fs-btns">
+        <button class="fs-btn" data-fs="s"  onclick="changeFontSize('s')">A</button>
+        <button class="fs-btn active" data-fs="m" onclick="changeFontSize('m')">A</button>
+        <button class="fs-btn" data-fs="l"  onclick="changeFontSize('l')">A</button>
+        <button class="fs-btn" data-fs="xl" onclick="changeFontSize('xl')">A</button>
+      </div>
+    </div>
+    <div class="setting-block" style="min-width:180px">
+      <div class="setting-label">Content Width &mdash; <span id="width-display">880px</span></div>
+      <input type="range" class="sett-range" id="width-range"
+             min="600" max="1200" step="40" value="880"
+             oninput="changeWidth(this)">
+    </div>
+    <div class="setting-block">
+      <div class="setting-label">Arabic Font</div>
+      <select class="sett-select" id="font-family-sel" onchange="changeFont(this)">
+        <option value="amiri">Amiri (Classic)</option>
+        <option value="noto">Noto Naskh</option>
+        <option value="cairo">Cairo</option>
+        <option value="tajawal">Tajawal</option>
+        <option value="system">System Default</option>
+      </select>
+    </div>
+    <div class="setting-block">
+      <div class="setting-label">Explanation Color</div>
+      <div class="color-swatches" id="exp-color-swatches">
+        <button class="color-sw active" data-c="default" onclick="changeExpColor('default')"
+                style="background:rgba(230,237,243,.75)" title="Default"></button>
+        <button class="color-sw" data-c="warm" onclick="changeExpColor('warm')"
+                style="background:#e8d5a3" title="Warm"></button>
+        <button class="color-sw" data-c="cyan" onclick="changeExpColor('cyan')"
+                style="background:#90cdf4" title="Cyan"></button>
+        <button class="color-sw" data-c="gold" onclick="changeExpColor('gold')"
+                style="background:#f6d860" title="Gold"></button>
+        <button class="color-sw" data-c="mint" onclick="changeExpColor('mint')"
+                style="background:#9ae6b4" title="Mint"></button>
+      </div>
+    </div>
+    <div class="setting-block">
+      <div class="setting-label">Annotate</div>
+      <button id="palm-reject-btn" class="ann-sett-btn active" onclick="togglePalmReject(this)"
+              title="Reject large touch contacts (palm) — keeps hand off canvas while pen writes">
+        &#128586; Palm Reject: ON
+      </button>
+    </div>
+    <div class="setting-block" style="min-width:180px">
+      <div class="setting-label">Stroke Smoothing &mdash; <span id="ann-smooth-display">80%</span></div>
+      <input type="range" class="sett-range" id="ann-smooth-range"
+             min="0" max="100" step="5" value="80"
+             oninput="changeAnnSmooth(this)"
+             title="0% = sharp lines, 100% = full bezier smoothing">
+    </div>
+  </div>
+</div>
+
+<div id="filter-bar">
+  <button class="filter-btn active" data-filter="all" onclick="applyFilter('all')">All (<span id="fc-all">0</span>)</button>
+  <button class="filter-btn" data-filter="unanswered" onclick="applyFilter('unanswered')">Unanswered (<span id="fc-unanswered">0</span>)</button>
+  <button class="filter-btn" data-filter="correct" onclick="applyFilter('correct')">&#10003; Correct (<span id="fc-correct">0</span>)</button>
+  <button class="filter-btn" data-filter="wrong" onclick="applyFilter('wrong')">&#10007; Wrong (<span id="fc-wrong">0</span>)</button>
+  <button class="filter-btn" data-filter="starred" onclick="applyFilter('starred')">&#9733; Starred (<span id="fc-starred">0</span>)</button>
+  <button class="filter-btn" id="retry-btn" onclick="retryFiltered()">&#8635; Retry</button>
+</div>
+</div>
+
+<div id="annotate-bar">
+  <button class="ann-tool-btn active" data-tool="pen" onclick="setAnnTool('pen')" title="Pen">&#9998;</button>
+  <button class="ann-tool-btn" data-tool="erase" onclick="setAnnTool('erase')" title="Erase">&#11036;</button>
+  <button class="ann-tool-btn" data-tool="pan" onclick="setAnnTool('pan')" title="Pan / scroll (touch moves page)">&#9995;</button>
+  <div class="ann-sep"></div>
+  <div class="ann-color active" data-color="#e74c3c" style="background:#e74c3c" onclick="setAnnColor(this)" title="Red"></div>
+  <div class="ann-color" data-color="#2980b9" style="background:#2980b9" onclick="setAnnColor(this)" title="Blue"></div>
+  <div class="ann-color" data-color="#27ae60" style="background:#27ae60" onclick="setAnnColor(this)" title="Green"></div>
+  <div class="ann-color" data-color="#f39c12" style="background:#f39c12" onclick="setAnnColor(this)" title="Orange"></div>
+  <div class="ann-color" data-color="#8e44ad" style="background:#8e44ad" onclick="setAnnColor(this)" title="Purple"></div>
+  <div class="ann-sep"></div>
+  <input class="ann-width" type="range" min="1" max="10" value="3" oninput="setAnnWidth(this)" title="Pen width">
+  <div class="ann-sep"></div>
+  <button class="ann-action-btn" onclick="annUndo()" title="Undo">&#8617;</button>
+  <button class="ann-action-btn" onclick="annRedo()" title="Redo">&#8618;</button>
+  <div class="ann-sep"></div>
+  <button class="ann-action-btn ann-clear-btn" onclick="clearAllAnnotations()">Clear All</button>
+</div>
+<div id="sel-popup">
+  <div class="sel-hl-dot" style="background:#ffd700" title="Highlight Yellow" onclick="selHighlight('yellow')"></div>
+  <div class="sel-hl-dot" style="background:#4caf50" title="Highlight Green"  onclick="selHighlight('green')"></div>
+  <div class="sel-hl-dot" style="background:#2196f3" title="Highlight Blue"   onclick="selHighlight('blue')"></div>
+  <div class="sel-hl-dot" style="background:#e91e63" title="Highlight Pink"   onclick="selHighlight('pink')"></div>
+  <div class="sel-sep2"></div>
+  <button class="sel-btn sel-remove-btn" id="sel-remove-btn" onclick="selRemoveHighlight()" title="Remove highlight">&#10006;</button>
+  <button class="sel-btn" onclick="selCopy()" title="Copy">&#128203;</button>
+  <button class="sel-btn" onclick="selSearch()" title="Search on Google">&#128269;</button>
+</div>
+
+<main>
+<section id="section-cvs_end_semester_20212022_pdf" class="exam-section">
+  <h2 class="section-title">
+    CVS end semester 20212022.pdf
+    <span class="q-count">(39 questions)</span>
+    <div class="section-progress-bar">
+      <div class="section-progress-fill" id="secfill-cvs_end_semester_20212022_pdf" style="width:0%"></div>
+    </div>
+  </h2>
+  
+<div class="qcard" data-id="cvs_prev_exam2022_q002" data-type="written" data-idx="1" data-subject="physio">
+<canvas class="qcard-canvas" data-qid="cvs_prev_exam2022_q002"></canvas>
+<div class="sticky-note" data-qid="cvs_prev_exam2022_q002">
+  <div class="sticky-note-header"><button class="note-close-btn" onclick="closeNote(this)">&#215;</button></div>
+  <canvas class="sticky-canvas" data-qid="cvs_prev_exam2022_q002" tabindex="0"></canvas>
+</div>
+  <div class="qcard-header">
+    <span class="q-num">Q1</span>
+    <span class="type-badge type-written">Written</span>
+    <button class="star-btn" data-id="cvs_prev_exam2022_q002" onclick="toggleStar(this)" title="Star this question">☆</button>
+    <button class="sticky-note-btn" data-qid="cvs_prev_exam2022_q002" onclick="toggleNote(this)" title="Sticky note">&#128221;</button>
+  </div>
+  <p class="q-text" dir="ltr">Compare and contrast:
+1. Heterometric autoregulation vs 
+Homeometric autoregulation
+2. Isometric contraction phase of cardiac cycle vs 
+Isometric relaxation phase of cardiac cycle</p>
+  <button class="show-answer-btn" onclick="showWrittenAnswer(this)" data-id="cvs_prev_exam2022_q002">&#128270; Show Answer</button>
+  <button class="gpt-btn" onclick="askGPT(this)">&#128172; Ask GPT</button>
+  <div class="answer-block" data-id="cvs_prev_exam2022_q002">
+    <div class="written-answer"><div class="w-part w-intro"><span class="w-text"><strong>1. Heterometric vs. Homeometric Autoregulation:</strong><br><strong>Heterometric Autoregulation:</strong></span></div><div class="w-part"><span class="w-label">1)</span><span class="w-text">Definition: intrinsic regulation of contraction force dependent on initial <br>muscle fiber length (preload / EDV)</span></div><div class="w-part"><span class="w-label">2)</span><span class="w-text">Trigger: increased end-diastolic volume (EDV) or venous return</span></div><div class="w-part"><span class="w-label">3)</span><span class="w-text">Mechanism: increased initial fiber length → increased contractile system <br>sensitivity to Ca²⁺ → increased active cross-bridge formation</span></div><div class="w-part"><span class="w-label">4)</span><span class="w-text">Governing Law: Starling&#x27;s law of the heart (&quot;force of contraction ∝ initial <br>fiber length / EDV&quot;)</span></div><div class="w-part"><span class="w-label">5)</span><span class="w-text">Physiological Role: beat-to-beat balancing of stroke volume between right and<br>left ventricles<br><br><strong>Homeometric Autoregulation:</strong></span></div><div class="w-part"><span class="w-label">1)</span><span class="w-text">Definition: intrinsic regulation of contraction force independent of initial <br>muscle fiber length</span></div><div class="w-part"><span class="w-label">2)</span><span class="w-text">Trigger: sustained increase in afterload (arterial blood pressure)</span></div><div class="w-part"><span class="w-label">3)</span><span class="w-text">Mechanism: increased coronary perfusion / internal myocardial stretch (Anrep <br>effect) → increased contractility at normal EDV</span></div><div class="w-part"><span class="w-label">4)</span><span class="w-text">Governing Law: operates independently of Starling&#x27;s initial force-length <br>relationship</span></div><div class="w-part"><span class="w-label">5)</span><span class="w-text">Physiological Role: secondary adaptation to sustained arterial pressure <br>elevation (always preceded by a short heterometric phase)<br><br><strong>2. Isometric Contraction vs. Isometric Relaxation Phase:</strong><br><strong>Isometric Contraction Phase:</strong></span></div><div class="w-part"><span class="w-label">1)</span><span class="w-text">Definition: ventricular contraction without change in ventricular volume</span></div><div class="w-part"><span class="w-label">2)</span><span class="w-text">Duration: 0.05 seconds</span></div><div class="w-part"><span class="w-label">3)</span><span class="w-text">Valve Status: all 4 valves closed (AV valves close at onset → produces 1st <br>heart sound, S1)</span></div><div class="w-part"><span class="w-label">4)</span><span class="w-text">Pressure Change: sharp rise in intraventricular pressure (0 to 80 mmHg in <br>left ventricle)</span></div><div class="w-part"><span class="w-label">5)</span><span class="w-text">Volume State: constant at end-diastolic volume (EDV = 130 mL)<br><br><strong>Isometric Relaxation Phase:</strong></span></div><div class="w-part"><span class="w-label">1)</span><span class="w-text">Definition: ventricular relaxation without change in ventricular volume</span></div><div class="w-part"><span class="w-label">2)</span><span class="w-text">Duration: 0.06 seconds</span></div><div class="w-part"><span class="w-label">3)</span><span class="w-text">Valve Status: all 4 valves closed (semilunar valves close at onset → produces<br>2nd heart sound, S2)</span></div><div class="w-part"><span class="w-label">4)</span><span class="w-text">Pressure Change: sharp drop in intraventricular pressure (110 to 0 mmHg in <br>left ventricle)</span></div><div class="w-part"><span class="w-label">5)</span><span class="w-text">Volume State: constant at end-systolic volume (ESV = 55 mL)</span></div></div>
+    <div class="self-assess">
+      <button class="got-it-btn" onclick="selfAssess(this,true)" data-id="cvs_prev_exam2022_q002">&#10003; Got it</button>
+      <button class="missed-btn" onclick="selfAssess(this,false)" data-id="cvs_prev_exam2022_q002">&#10007; Missed</button>
+    </div>
+    <div class="explanation" dir="rtl"><h4 class="exp-h">التنظيم الذاتي والمراحل الإيزومترية بالقلب</h4><p><strong>Heterometric autoregulation</strong> يعتمد على ==تغيير طول الألياف العضلية  الابتدائي== (<mark class="exp-term">Preload / EDV</mark>) لضبط الـ <mark class="exp-term">Stroke volume</mark> طبقاً لـ ||قانون  ستارلينج||. بينما <strong>Homeometric autoregulation</strong> بيزود قوة الانقباض عند ثبات طول الألياف محافِظاً على الـ <mark class="exp-term">EDV</mark> عند ارتفاع الـ <mark class="exp-term">Afterload</mark> المتواصل كـ ||Anrep effect||.</p><p>أما في الدورة القلبية: في <strong>Isometric contraction phase</strong>، تنقبض العضلة وجميع الصمامات مقفولة، فيرتفع  الضغط بسرعة من <div class="exp-q">0 إلى 80 مم زئبق</div> عند حجم ثابت <mark class="exp-term">EDV = 130 mL</mark> وببدايتها يُسمع <mark class="exp-term">الصوت القلبي الأول S1</mark>. في <strong>Isometric relaxation phase</strong>، تنبسط العضلة وجميع الصمامات مقفولة، فينخفض  الضغط بسرعة من <div class="exp-q">110 إلى 0 مم زئبق</div> عند حجم ثابت <mark class="exp-term">ESV = 55 mL</mark> وببدايتها يُسمع <mark class="exp-term">الصوت القلبي الثاني S2</mark>.</p></div>
+  </div>
+</div>
+<div class="qcard" data-id="cvs_prev_exam2022_q090" data-type="mcq" data-correct="D" data-idx="2" data-subject="physio">
+<canvas class="qcard-canvas" data-qid="cvs_prev_exam2022_q090"></canvas>
+<div class="sticky-note" data-qid="cvs_prev_exam2022_q090">
+  <div class="sticky-note-header"><button class="note-close-btn" onclick="closeNote(this)">&#215;</button></div>
+  <canvas class="sticky-canvas" data-qid="cvs_prev_exam2022_q090" tabindex="0"></canvas>
+</div>
+  <div class="qcard-header">
+    <span class="q-num">Q2</span>
+    <div class="qcard-badges"></div>
+    <button class="star-btn" data-id="cvs_prev_exam2022_q090" onclick="toggleStar(this)" title="Star this question">☆</button>
+    <button class="sticky-note-btn" data-qid="cvs_prev_exam2022_q090" onclick="toggleNote(this)" title="Sticky note">&#128221;</button>
+  </div>
+  
+  <p class="q-text" dir="ltr">Regarding ECG intervals, which of the following is crucial to calculate its 
+duration in a patient presented with a history of ventricular tachycardia?</p>
+  <ul class="opts" dir="ltr" data-id="cvs_prev_exam2022_q090"><li class="opt" data-letter="A">A. PR interval.</li>
+<li class="opt" data-letter="B">B. RR interval.</li>
+<li class="opt" data-letter="C">C. PP interval.</li>
+<li class="opt is-correct" data-letter="D">D. QTc interval.</li>
+<li class="opt" data-letter="E">E. RP interval.</li>
+</ul>
+  <div class="answer-block" data-id="cvs_prev_exam2022_q090">
+    <div class="answer-reveal">&#9989; Correct: D &mdash; QTc interval.</div>
+    <div class="exp-label">الشرح</div>
+    <div class="explanation-ar" dir="rtl" lang="ar"><p>حساب الـ QTc interval مهم جداً في عيانين الـ Ventricular  tachycardia لأنه بيحدد خطر حدوث Torsades de pointes والـ Long QT syndrome  وبالتالي D هي الإجابة الصح</p><h4 class="exp-h">ليه الباقي غلط؟🤔</h4><p>A. PR interval ده بيعبر عن الـ AV nodal conduction time ومش مرتبط بالـ  Ventricular arrhythmia فبالتالي متنفعش<br>B. RR interval بنحسب منه الـ Heart rate بس مش الـ Crucial interval للـ  Ventricular tachycardia وبالتالي متنفعش<br>C. PP interval بيحسب الـ Atrial rate وملوش علاقة بالـ Ventricular tachycardia  وبالتالي مش صح<br>E. RP interval بيقيس الـ Retrograde conduction في أنواع تانية ومش هو الـ Crucial هنا وبالتالي متنفعش</p></div>
+  </div>
+  <button class="show-exp-btn" onclick="showExplanation(this)" data-id="cvs_prev_exam2022_q090">&#128161; Show Explanation</button>
+  <button class="gpt-btn" onclick="askGPT(this)">&#128172; Ask GPT</button>
+</div>
+<div class="qcard" data-id="cvs_prev_exam2022_q091" data-type="mcq" data-correct="C" data-idx="3" data-subject="physio">
+<canvas class="qcard-canvas" data-qid="cvs_prev_exam2022_q091"></canvas>
+<div class="sticky-note" data-qid="cvs_prev_exam2022_q091">
+  <div class="sticky-note-header"><button class="note-close-btn" onclick="closeNote(this)">&#215;</button></div>
+  <canvas class="sticky-canvas" data-qid="cvs_prev_exam2022_q091" tabindex="0"></canvas>
+</div>
+  <div class="qcard-header">
+    <span class="q-num">Q3</span>
+    <div class="qcard-badges"></div>
+    <button class="star-btn" data-id="cvs_prev_exam2022_q091" onclick="toggleStar(this)" title="Star this question">☆</button>
+    <button class="sticky-note-btn" data-qid="cvs_prev_exam2022_q091" onclick="toggleNote(this)" title="Sticky note">&#128221;</button>
+  </div>
+  
+  <p class="q-text" dir="ltr">The normal axis of the 
+heart lies between:</p>
+  <ul class="opts" dir="ltr" data-id="cvs_prev_exam2022_q091"><li class="opt" data-letter="A">A. - 90 and - 120 degrees.</li>
+<li class="opt" data-letter="B">B. + 90 and
++ 180 degrees.</li>
+<li class="opt is-correct" data-letter="C">C. - 30 and + 90 degrees.</li>
+<li class="opt" data-letter="D">D. - 30 and - 90 degrees.</li>
+<li class="opt" data-letter="E">E. - 30 and + 120 degrees.</li>
+</ul>
+  <div class="answer-block" data-id="cvs_prev_exam2022_q091">
+    <div class="answer-reveal">&#9989; Correct: C &mdash; - 30 and + 90 degrees.</div>
+    <div class="exp-label">الشرح</div>
+    <div class="explanation-ar" dir="rtl" lang="ar"><p>الـ Normal axis بتاع القلب بيمتد من -30 لحد +90 درجة  وبالتالي C هي الإجابة الصح الوحيدة.</p><h4 class="exp-h">ليه الباقي غلط؟🤔</h4><p>A. - 90 and - 120 degrees دي بتعبر عن Extreme axis deviation وبالتالي متنفعش  معانا<br>B. + 90 and + 180 degrees دي بتعبر عن Right axis deviation وبالتالي مش صح<br>D. - 30 and - 90 degrees دي بتعبر عن Left axis deviation وبالتالي متنفعش<br>E. - 30 and + 120 degrees النطاق ده بيمتد جوا الـ Right axis deviation فبالتالي  مش دقيق ومتنفعش</p></div>
+  </div>
+  <button class="show-exp-btn" onclick="showExplanation(this)" data-id="cvs_prev_exam2022_q091">&#128161; Show Explanation</button>
+  <button class="gpt-btn" onclick="askGPT(this)">&#128172; Ask GPT</button>
+</div>
+<div class="qcard" data-id="cvs_prev_exam2022_q092" data-type="mcq" data-correct="E" data-idx="4" data-subject="physio">
+<canvas class="qcard-canvas" data-qid="cvs_prev_exam2022_q092"></canvas>
+<div class="sticky-note" data-qid="cvs_prev_exam2022_q092">
+  <div class="sticky-note-header"><button class="note-close-btn" onclick="closeNote(this)">&#215;</button></div>
+  <canvas class="sticky-canvas" data-qid="cvs_prev_exam2022_q092" tabindex="0"></canvas>
+</div>
+  <div class="qcard-header">
+    <span class="q-num">Q4</span>
+    <div class="qcard-badges"></div>
+    <button class="star-btn" data-id="cvs_prev_exam2022_q092" onclick="toggleStar(this)" title="Star this question">☆</button>
+    <button class="sticky-note-btn" data-qid="cvs_prev_exam2022_q092" onclick="toggleNote(this)" title="Sticky note">&#128221;</button>
+  </div>
+  
+  <p class="q-text" dir="ltr">Which one of the 
+following will increase if massaging the neck stretches the carotid sinus 
+baroreceptors?</p>
+  <ul class="opts" dir="ltr" data-id="cvs_prev_exam2022_q092"><li class="opt" data-letter="A">A. Total peripheral resistance.</li>
+<li class="opt" data-letter="B">B. Right 
+atrial pressure.</li>
+<li class="opt" data-letter="C">C. Venous tone.</li>
+<li class="opt" data-letter="D">D. Ventricular contractility.</li>
+<li class="opt is-correct" data-letter="E">E. Vagal tone activity.</li>
+</ul>
+  <div class="answer-block" data-id="cvs_prev_exam2022_q092">
+    <div class="answer-reveal">&#9989; Correct: E &mdash; Vagal tone activity.</div>
+    <div class="exp-label">الشرح</div>
+    <div class="explanation-ar" dir="rtl" lang="ar"><p>مساج الرقبة بيعمل stretch للـ Carotid sinus baroreceptors  وده بيزود إشارات الـ Vagal tone activity ويقلل الـ Sympathetic tone فبالتالي E  هي الصح.</p><h4 class="exp-h">ليه الباقي غلط؟🤔</h4><p>A. Total peripheral resistance C. Venous tone D. Ventricular contractility دول كلهم بيقلوا نتيجة نقص الـ Sympathetic discharge وبالتالي مش هينفعوا معانا<br>B. Right atrial pressure مش بيزيد كـ reflex للـ Baroreceptors وبالتالي متنفعش</p></div>
+  </div>
+  <button class="show-exp-btn" onclick="showExplanation(this)" data-id="cvs_prev_exam2022_q092">&#128161; Show Explanation</button>
+  <button class="gpt-btn" onclick="askGPT(this)">&#128172; Ask GPT</button>
+</div>
+<div class="qcard" data-id="cvs_prev_exam2022_q093" data-type="mcq" data-correct="B" data-idx="5" data-subject="physio">
+<canvas class="qcard-canvas" data-qid="cvs_prev_exam2022_q093"></canvas>
+<div class="sticky-note" data-qid="cvs_prev_exam2022_q093">
+  <div class="sticky-note-header"><button class="note-close-btn" onclick="closeNote(this)">&#215;</button></div>
+  <canvas class="sticky-canvas" data-qid="cvs_prev_exam2022_q093" tabindex="0"></canvas>
+</div>
+  <div class="qcard-header">
+    <span class="q-num">Q5</span>
+    <div class="qcard-badges"></div>
+    <button class="star-btn" data-id="cvs_prev_exam2022_q093" onclick="toggleStar(this)" title="Star this question">☆</button>
+    <button class="sticky-note-btn" data-qid="cvs_prev_exam2022_q093" onclick="toggleNote(this)" title="Sticky note">&#128221;</button>
+  </div>
+  
+  <p class="q-text" dir="ltr">The distribution of blood among the various organs
+of the body is regulated by regulating the resistance of the:</p>
+  <ul class="opts" dir="ltr" data-id="cvs_prev_exam2022_q093"><li class="opt" data-letter="A">A. Arteries.</li>
+<li class="opt is-correct" data-letter="B">B. Arterioles.</li>
+<li class="opt" data-letter="C">C. Precapillary sphincter.</li>
+<li class="opt" data-letter="D">D. Post 
+capillary venules.</li>
+<li class="opt" data-letter="E">E. Veins.</li>
+</ul>
+  <div class="answer-block" data-id="cvs_prev_exam2022_q093">
+    <div class="answer-reveal">&#9989; Correct: B &mdash; Arterioles.</div>
+    <div class="exp-label">الشرح</div>
+    <div class="explanation-ar" dir="rtl" lang="ar"><p>الـ Arterioles هي الـ Major resistance vessels في الجسم  وتغيير الـ Resistance بتاعتها هو اللي بينظم توزيع الـ Blood flow بين الـ Organs  المختلفة وبالتالي B هي الإجابة الصح.</p><h4 class="exp-h">ليه الباقي غلط؟🤔</h4><p>A. Arteries دي تعتبر Conduit vessels بتنقل الدم مش المسؤولة الرئيسية عن الـ  Resistance وبالتالي متنفعش<br>C. Precapillary sphincter بيتحكم في الـ Local capillary blood flow جوة النسيج  نفسه مش توزيع الدم بين الأعضاء وبالتالي مش صح<br>D. Post capillary venules مشاركتها ضئيلة جداً في الـ Resistance وبالتالي متنفعش<br>E. Veins دي Capacitance vessels بتشتغل كـ Reservoir للدم مش للتحكم في الـ  Resistance وبالتالي متنفعش</p></div>
+  </div>
+  <button class="show-exp-btn" onclick="showExplanation(this)" data-id="cvs_prev_exam2022_q093">&#128161; Show Explanation</button>
+  <button class="gpt-btn" onclick="askGPT(this)">&#128172; Ask GPT</button>
+</div>
+<div class="qcard" data-id="cvs_prev_exam2022_q094" data-type="mcq" data-correct="E" data-idx="6" data-subject="physio">
+<canvas class="qcard-canvas" data-qid="cvs_prev_exam2022_q094"></canvas>
+<div class="sticky-note" data-qid="cvs_prev_exam2022_q094">
+  <div class="sticky-note-header"><button class="note-close-btn" onclick="closeNote(this)">&#215;</button></div>
+  <canvas class="sticky-canvas" data-qid="cvs_prev_exam2022_q094" tabindex="0"></canvas>
+</div>
+  <div class="qcard-header">
+    <span class="q-num">Q6</span>
+    <div class="qcard-badges"></div>
+    <button class="star-btn" data-id="cvs_prev_exam2022_q094" onclick="toggleStar(this)" title="Star this question">☆</button>
+    <button class="sticky-note-btn" data-qid="cvs_prev_exam2022_q094" onclick="toggleNote(this)" title="Sticky note">&#128221;</button>
+  </div>
+  
+  <p class="q-text" dir="ltr">Pulse pressure 
+increases when:</p>
+  <ul class="opts" dir="ltr" data-id="cvs_prev_exam2022_q094"><li class="opt" data-letter="A">A. Heart rate increases.</li>
+<li class="opt" data-letter="B">B. Stroke volume 
+decreases.</li>
+<li class="opt" data-letter="C">C. Aortic compliance increases.</li>
+<li class="opt" data-letter="D">D. Aortic stenosis 
+develops.</li>
+<li class="opt is-correct" data-letter="E">E. Mean arterial pressure increases.</li>
+</ul>
+  <div class="answer-block" data-id="cvs_prev_exam2022_q094">
+    <div class="answer-reveal">&#9989; Correct: E &mdash; Mean arterial pressure increases.</div>
+    <div class="exp-label">الشرح</div>
+    <div class="explanation-ar" dir="rtl" lang="ar"><p>ارتفاع الـ Mean arterial pressure بيخلي الشرايين تشتغل عند  Compliance أقل وبيزود الـ Systolic pressure فده بيزود الـ Pulse pressure  وبالتالي E هي الإجابة الصح.</p><h4 class="exp-h">ليه الباقي غلط؟🤔</h4><p>A. Heart rate increases B. Stroke volume decreases C. Aortic compliance  increases D. Aortic stenosis develops كل العوامل دي بتقلل الـ Pulse pressure مش بتزوده وبالتالي مش هينفعوا معانا.</p></div>
+  </div>
+  <button class="show-exp-btn" onclick="showExplanation(this)" data-id="cvs_prev_exam2022_q094">&#128161; Show Explanation</button>
+  <button class="gpt-btn" onclick="askGPT(this)">&#128172; Ask GPT</button>
+</div>
+<div class="qcard" data-id="cvs_prev_exam2022_q095" data-type="mcq" data-correct="A" data-idx="7" data-subject="physio">
+<canvas class="qcard-canvas" data-qid="cvs_prev_exam2022_q095"></canvas>
+<div class="sticky-note" data-qid="cvs_prev_exam2022_q095">
+  <div class="sticky-note-header"><button class="note-close-btn" onclick="closeNote(this)">&#215;</button></div>
+  <canvas class="sticky-canvas" data-qid="cvs_prev_exam2022_q095" tabindex="0"></canvas>
+</div>
+  <div class="qcard-header">
+    <span class="q-num">Q7</span>
+    <div class="qcard-badges"></div>
+    <button class="star-btn" data-id="cvs_prev_exam2022_q095" onclick="toggleStar(this)" title="Star this question">☆</button>
+    <button class="sticky-note-btn" data-qid="cvs_prev_exam2022_q095" onclick="toggleNote(this)" title="Sticky note">&#128221;</button>
+  </div>
+  
+  <p class="q-text" dir="ltr">Turbulence is more likely to occur in a blood vessel if:</p>
+  <ul class="opts" dir="ltr" data-id="cvs_prev_exam2022_q095"><li class="opt is-correct" data-letter="A">A. The velocity of blood within the vessel increases.</li>
+<li class="opt" data-letter="B">B. The viscosity of 
+blood within the vessel increases.</li>
+<li class="opt" data-letter="C">C. The diameter of the vessel 
+decreases.</li>
+<li class="opt" data-letter="D">D. The density of the blood decreases.</li>
+<li class="opt" data-letter="E">E. The length of the
+vessel increases.</li>
+</ul>
+  <div class="answer-block" data-id="cvs_prev_exam2022_q095">
+    <div class="answer-reveal">&#9989; Correct: A &mdash; The velocity of blood within the vessel increases.</div>
+    <div class="exp-label">الشرح</div>
+    <div class="explanation-ar" dir="rtl" lang="ar"><p>حسب معادلة Reynolds number فالـ Turbulence بتزيد لما الـ  Velocity بتاع الـ Blood تجزيد جوة الـ Blood vessel فبالتالي A هي الإجابة الصح.</p><h4 class="exp-h">ليه الباقي غلط؟🤔</h4><p>B. Viscosity increases C. Diameter decreases D. Density decreases دول كلهم بيقللوا الـ Reynolds number فيقللوا الـ Turbulence فبالتالي مش هينفعوا  معانا<br>E. Length of the vessel ملوش تأثير مباشر على الـ Reynolds number فبالتالي متنفعش</p></div>
+  </div>
+  <button class="show-exp-btn" onclick="showExplanation(this)" data-id="cvs_prev_exam2022_q095">&#128161; Show Explanation</button>
+  <button class="gpt-btn" onclick="askGPT(this)">&#128172; Ask GPT</button>
+</div>
+<div class="qcard" data-id="cvs_prev_exam2022_q096" data-type="mcq" data-correct="A" data-idx="8" data-subject="physio">
+<canvas class="qcard-canvas" data-qid="cvs_prev_exam2022_q096"></canvas>
+<div class="sticky-note" data-qid="cvs_prev_exam2022_q096">
+  <div class="sticky-note-header"><button class="note-close-btn" onclick="closeNote(this)">&#215;</button></div>
+  <canvas class="sticky-canvas" data-qid="cvs_prev_exam2022_q096" tabindex="0"></canvas>
+</div>
+  <div class="qcard-header">
+    <span class="q-num">Q8</span>
+    <div class="qcard-badges"></div>
+    <button class="star-btn" data-id="cvs_prev_exam2022_q096" onclick="toggleStar(this)" title="Star this question">☆</button>
+    <button class="sticky-note-btn" data-qid="cvs_prev_exam2022_q096" onclick="toggleNote(this)" title="Sticky note">&#128221;</button>
+  </div>
+  
+  <p class="q-text" dir="ltr">Sympathetic stimulation of heart results in:</p>
+  <ul class="opts" dir="ltr" data-id="cvs_prev_exam2022_q096"><li class="opt is-correct" data-letter="A">A. An increase in the activity of sarcoplasmic reticulum calcium 
+pump.</li>
+<li class="opt" data-letter="B">B. An increase in the duration of systole.</li>
+<li class="opt" data-letter="C">C. An increase in the
+duration of diastole.</li>
+<li class="opt" data-letter="D">D. A decrease in the affinity of troponin for 
+calcium.</li>
+<li class="opt" data-letter="E">E. A decrease in the concentration of Ca2+ during systole.</li>
+</ul>
+  <div class="answer-block" data-id="cvs_prev_exam2022_q096">
+    <div class="answer-reveal">&#9989; Correct: A &mdash; An increase in the activity of sarcoplasmic reticulum calcium 
+pump.</div>
+    <div class="exp-label">الشرح</div>
+    <div class="explanation-ar" dir="rtl" lang="ar"><p>الـ Sympathetic stimulation للقلب بيزود نشاط الـ  Sarcoplasmic reticulum Ca2+ pump عن طريق فسفرة الـ Phospholamban وده بيسرع الـ  Relaxation كـ Positive lusitropic effect وبالتالي A هي الصح.</p><h4 class="exp-h">ليه الباقي غلط؟🤔</h4><p>B. An increase in the duration of systole C. An increase in the duration of  diastole زيادة الـ Sympathetic بتزود الـ Heart rate وتقصر مدة الـ Systole والـ Diastole  فمتنفعش<br>D. A decrease in the affinity of troponin for calcium بتقلل الألفة عشان تسرع الـ Relaxation مش تمنعه<br>E. A decrease in the concentration of Ca2+ during systole الكالسيوم بيزيد جداً  أثناء الانقباض ومش بيقل</p></div>
+  </div>
+  <button class="show-exp-btn" onclick="showExplanation(this)" data-id="cvs_prev_exam2022_q096">&#128161; Show Explanation</button>
+  <button class="gpt-btn" onclick="askGPT(this)">&#128172; Ask GPT</button>
+</div>
+<div class="qcard" data-id="cvs_prev_exam2022_q097" data-type="mcq" data-correct="D" data-idx="9" data-subject="physio">
+<canvas class="qcard-canvas" data-qid="cvs_prev_exam2022_q097"></canvas>
+<div class="sticky-note" data-qid="cvs_prev_exam2022_q097">
+  <div class="sticky-note-header"><button class="note-close-btn" onclick="closeNote(this)">&#215;</button></div>
+  <canvas class="sticky-canvas" data-qid="cvs_prev_exam2022_q097" tabindex="0"></canvas>
+</div>
+  <div class="qcard-header">
+    <span class="q-num">Q9</span>
+    <div class="qcard-badges"></div>
+    <button class="star-btn" data-id="cvs_prev_exam2022_q097" onclick="toggleStar(this)" title="Star this question">☆</button>
+    <button class="sticky-note-btn" data-qid="cvs_prev_exam2022_q097" onclick="toggleNote(this)" title="Sticky note">&#128221;</button>
+  </div>
+  
+  <p class="q-text" dir="ltr">Central venous pressure is increased by:</p>
+  <ul class="opts" dir="ltr" data-id="cvs_prev_exam2022_q097"><li class="opt" data-letter="A">A. Decreasing blood volume.</li>
+<li class="opt" data-letter="B">B. Increasing venous compliance.</li>
+<li class="opt" data-letter="C">C. Increasing total peripheral resistance.</li>
+<li class="opt is-correct" data-letter="D">D. Decreasing heart rate.</li>
+<li class="opt" data-letter="E">E. Decreasing plasma aldosterone concentration.</li>
+</ul>
+  <div class="answer-block" data-id="cvs_prev_exam2022_q097">
+    <div class="answer-reveal">&#9989; Correct: D &mdash; Decreasing heart rate.</div>
+    <div class="exp-label">الشرح</div>
+    <div class="explanation-ar" dir="rtl" lang="ar"><p>نقص الـ Heart rate بيقلل الـ Cardiac pumping وبالتالي الدم  بيتراكم في الـ Right atrium والـ Great veins وده بيزود الـ Central venous  pressure وعشان كده D هي الإجابة الصح.</p><h4 class="exp-h">ليه الباقي غلط؟🤔</h4><p>A. Decreasing blood volume بيقلل الـ Mean systemic filling pressure والـ Venous  return للقلب فيقلل الـ CVP وبالتالي متنفعش.<br>B. Increasing venous compliance بيزود الـ Venous pooling وينقص الـ CVP فبالتالي  مش صح.<br>C. Increasing total peripheral resistance بيحبس الدم في الـ Arterial side ويقلل  الـ Venous return للـ CVP وبالتالي متنفعش.<br>E. Decreasing plasma aldosterone concentration بيقلل الـ Blood volume عن طريق  إخراج المية والصوديوم فيقلل الـ CVP وبالتالي مش معانا.</p></div>
+  </div>
+  <button class="show-exp-btn" onclick="showExplanation(this)" data-id="cvs_prev_exam2022_q097">&#128161; Show Explanation</button>
+  <button class="gpt-btn" onclick="askGPT(this)">&#128172; Ask GPT</button>
+</div>
+<div class="qcard" data-id="cvs_prev_exam2022_q098" data-type="mcq" data-correct="D" data-idx="10" data-subject="physio">
+<canvas class="qcard-canvas" data-qid="cvs_prev_exam2022_q098"></canvas>
+<div class="sticky-note" data-qid="cvs_prev_exam2022_q098">
+  <div class="sticky-note-header"><button class="note-close-btn" onclick="closeNote(this)">&#215;</button></div>
+  <canvas class="sticky-canvas" data-qid="cvs_prev_exam2022_q098" tabindex="0"></canvas>
+</div>
+  <div class="qcard-header">
+    <span class="q-num">Q10</span>
+    <div class="qcard-badges"></div>
+    <button class="star-btn" data-id="cvs_prev_exam2022_q098" onclick="toggleStar(this)" title="Star this question">☆</button>
+    <button class="sticky-note-btn" data-qid="cvs_prev_exam2022_q098" onclick="toggleNote(this)" title="Sticky note">&#128221;</button>
+  </div>
+  
+  <p class="q-text" dir="ltr">A reduction in carotid 
+sinus pressure would cause a decrease in:</p>
+  <ul class="opts" dir="ltr" data-id="cvs_prev_exam2022_q098"><li class="opt" data-letter="A">A. Heart rate.</li>
+<li class="opt" data-letter="B">B. Myocardial contractility.</li>
+<li class="opt" data-letter="C">C. Total peripheral resistance.</li>
+<li class="opt is-correct" data-letter="D">D. Venous 
+compliance.</li>
+<li class="opt" data-letter="E">E. Cardiac output.</li>
+</ul>
+  <div class="answer-block" data-id="cvs_prev_exam2022_q098">
+    <div class="answer-reveal">&#9989; Correct: D &mdash; Venous 
+compliance.</div>
+    <div class="exp-label">الشرح</div>
+    <div class="explanation-ar" dir="rtl" lang="ar"><p>نقص الـ Carotid sinus pressure بيقلل الـ Baroreceptor  discharge وده بيزود الـ Sympathetic activity اللي بتعمل Venoconstriction  وبالتالي بتقلل الـ Venous compliance فتبقى D هي الإجابة الصح.</p><h4 class="exp-h">ليه الباقي غلط؟🤔</h4><p>A. Heart rate B. Myocardial contractility C. Total peripheral resistance E.  Cardiac output دول كلهم بيزيدوا نتيجة زيادة الـ Sympathetic discharge وبالتالي مش هينفعوا معانا</p></div>
+  </div>
+  <button class="show-exp-btn" onclick="showExplanation(this)" data-id="cvs_prev_exam2022_q098">&#128161; Show Explanation</button>
+  <button class="gpt-btn" onclick="askGPT(this)">&#128172; Ask GPT</button>
+</div>
+<div class="qcard" data-id="cvs_prev_exam2022_q099" data-type="mcq" data-correct="A" data-idx="11" data-subject="physio">
+<canvas class="qcard-canvas" data-qid="cvs_prev_exam2022_q099"></canvas>
+<div class="sticky-note" data-qid="cvs_prev_exam2022_q099">
+  <div class="sticky-note-header"><button class="note-close-btn" onclick="closeNote(this)">&#215;</button></div>
+  <canvas class="sticky-canvas" data-qid="cvs_prev_exam2022_q099" tabindex="0"></canvas>
+</div>
+  <div class="qcard-header">
+    <span class="q-num">Q11</span>
+    <div class="qcard-badges"></div>
+    <button class="star-btn" data-id="cvs_prev_exam2022_q099" onclick="toggleStar(this)" title="Star this question">☆</button>
+    <button class="sticky-note-btn" data-qid="cvs_prev_exam2022_q099" onclick="toggleNote(this)" title="Sticky note">&#128221;</button>
+  </div>
+  
+  <p class="q-text" dir="ltr">Stroke volume can be 
+increased by:</p>
+  <ul class="opts" dir="ltr" data-id="cvs_prev_exam2022_q099"><li class="opt is-correct" data-letter="A">A. Increasing ventricular contractility.</li>
+<li class="opt" data-letter="B">B. Increasing heart rate.</li>
+<li class="opt" data-letter="C">C. Increasing central venous pressure.</li>
+<li class="opt" data-letter="D">D. Decreasing total peripheral resistance.</li>
+<li class="opt" data-letter="E">E. Decreasing systemic blood 
+pressure.</li>
+</ul>
+  <div class="answer-block" data-id="cvs_prev_exam2022_q099">
+    <div class="answer-reveal">&#9989; Correct: A &mdash; Increasing ventricular contractility.</div>
+    <div class="exp-label">الشرح</div>
+    <div class="explanation-ar" dir="rtl" lang="ar"><p>زيادة الـ Ventricular contractility بتزود قوة الانقباض  وبتخلي القلب يضخ كمية دم أكبر ويقلل الـ ESV وده بيزود الـ Stroke volume بشكل  مباشر وبالتالي A هي الإجابة الصح.</p><h4 class="exp-h">ليه الباقي غلط؟🤔</h4><p>B. Increasing heart rate بيقلل الـ Diastolic filling time فممكن يقلل الـ Stroke  volume وبالتالي متنفعش<br>C. Increasing central venous pressure بيزود الـ Venous return والـ Preload لكن  زيادة الـ Contractility المباشرة هي العامل الأساسي المباشر في الاختيارات<br>D. Decreasing total peripheral resistance E. Decreasing systemic blood pressure دول بيقللوا الـ Afterload لكن زيادة الـ Contractility هي الإجابة الأقوى والأباشر لتكبير الـ Stroke volume فبالتالي مش هيكونوا الاختيار الأول</p></div>
+  </div>
+  <button class="show-exp-btn" onclick="showExplanation(this)" data-id="cvs_prev_exam2022_q099">&#128161; Show Explanation</button>
+  <button class="gpt-btn" onclick="askGPT(this)">&#128172; Ask GPT</button>
+</div>
+<div class="qcard" data-id="cvs_prev_exam2022_q100" data-type="mcq" data-correct="B" data-idx="12" data-subject="physio">
+<canvas class="qcard-canvas" data-qid="cvs_prev_exam2022_q100"></canvas>
+<div class="sticky-note" data-qid="cvs_prev_exam2022_q100">
+  <div class="sticky-note-header"><button class="note-close-btn" onclick="closeNote(this)">&#215;</button></div>
+  <canvas class="sticky-canvas" data-qid="cvs_prev_exam2022_q100" tabindex="0"></canvas>
+</div>
+  <div class="qcard-header">
+    <span class="q-num">Q12</span>
+    <div class="qcard-badges"></div>
+    <button class="star-btn" data-id="cvs_prev_exam2022_q100" onclick="toggleStar(this)" title="Star this question">☆</button>
+    <button class="sticky-note-btn" data-qid="cvs_prev_exam2022_q100" onclick="toggleNote(this)" title="Sticky note">&#128221;</button>
+  </div>
+  
+  <p class="q-text" dir="ltr">Which of the following correctly describes an event that
+normally occurs during the P-R interval?</p>
+  <ul class="opts" dir="ltr" data-id="cvs_prev_exam2022_q100"><li class="opt" data-letter="A">A. The valve is 
+contracting.</li>
+<li class="opt is-correct" data-letter="B">B. The cardiac action potential through the A-V node.</li>
+<li class="opt" data-letter="C">C. There is no change in the voltage tracing on the ECG.</li>
+<li class="opt" data-letter="D">D. The mitral and 
+aortic valves are both closed.</li>
+<li class="opt" data-letter="E">E. The second heart sound is heard.</li>
+</ul>
+  <div class="answer-block" data-id="cvs_prev_exam2022_q100">
+    <div class="answer-reveal">&#9989; Correct: B &mdash; The cardiac action potential through the A-V node.</div>
+    <div class="exp-label">الشرح</div>
+    <div class="explanation-ar" dir="rtl" lang="ar"><p>الـ P-R interval بتعبر عن الوقت اللي بياخده الـ Action  potential عشان يتنقل من الـ Atria ويروح للـ Ventricles عن طريق الـ A-V node  وبالتالي B هي الإجابة الصح.</p><h4 class="exp-h">ليه الباقي غلط؟🤔</h4><p>A. Valves مش بتعمل Contraction ده الـ Myocardium هو اللي ينقبض وبالتالي متنفعش<br>C. الـ P-R interval جواها الـ P wave وفيها تغيير في الـ Voltage tracing وبالتالي مش صح<br>D. الـ Mitral valve بيكون open في الوقت ده عشان الـ Atrial contraction والـ  Ventricular filling فبالتالي متنفعش معانا<br>E. الـ Second heart sound بيحصل مع قفل الـ Semilunar valves في نهاية الـ Systole مش الـ P-R interval وبالتالي مش صح</p></div>
+  </div>
+  <button class="show-exp-btn" onclick="showExplanation(this)" data-id="cvs_prev_exam2022_q100">&#128161; Show Explanation</button>
+  <button class="gpt-btn" onclick="askGPT(this)">&#128172; Ask GPT</button>
+</div>
+<div class="qcard" data-id="cvs_prev_exam2022_q101" data-type="mcq" data-correct="D" data-idx="13" data-subject="physio">
+<canvas class="qcard-canvas" data-qid="cvs_prev_exam2022_q101"></canvas>
+<div class="sticky-note" data-qid="cvs_prev_exam2022_q101">
+  <div class="sticky-note-header"><button class="note-close-btn" onclick="closeNote(this)">&#215;</button></div>
+  <canvas class="sticky-canvas" data-qid="cvs_prev_exam2022_q101" tabindex="0"></canvas>
+</div>
+  <div class="qcard-header">
+    <span class="q-num">Q13</span>
+    <div class="qcard-badges"></div>
+    <button class="star-btn" data-id="cvs_prev_exam2022_q101" onclick="toggleStar(this)" title="Star this question">☆</button>
+    <button class="sticky-note-btn" data-qid="cvs_prev_exam2022_q101" onclick="toggleNote(this)" title="Sticky note">&#128221;</button>
+  </div>
+  
+  <p class="q-text" dir="ltr">Which 
+of the following is the best index of preload?</p>
+  <ul class="opts" dir="ltr" data-id="cvs_prev_exam2022_q101"><li class="opt" data-letter="A">A. Blood 
+volume.</li>
+<li class="opt" data-letter="B">B. Central venous pressure.</li>
+<li class="opt" data-letter="C">C. Pulmonary capillary pressure.</li>
+<li class="opt is-correct" data-letter="D">D. Left ventricular end-diastolic volume.</li>
+<li class="opt" data-letter="E">E. Left ventricular 
+end-diastolic pressure.</li>
+</ul>
+  <div class="answer-block" data-id="cvs_prev_exam2022_q101">
+    <div class="answer-reveal">&#9989; Correct: D &mdash; Left ventricular end-diastolic volume.</div>
+    <div class="exp-label">الشرح</div>
+    <div class="explanation-ar" dir="rtl" lang="ar"><p>الـ Preload بيمثل درجة الـ Stretch بتاعة الـ Myocardial  fibers قبل الانقباض مباشرة والـ Left ventricular end-diastolic volume هو الـ  Direct and best index ليه وبالتالي D هي الصح.</p><h4 class="exp-h">ليه الباقي غلط؟🤔</h4><p>A. Blood volume ده مجرد Factor بيأثر على الـ Preload ومش مؤشر قياس مباشر للـ  Stretch فبالتالي متنفعش<br>B. Central venous pressure ده بيمثل الـ Right ventricular preload مش الـ Left  ventricle وبالتالي مش صح<br>C. Pulmonary capillary pressure ده بيقيس الـ Capillary pressure كـ Estimate للـ  LA pressure وبالتالي متنفعش<br>E. Left ventricular end-diastolic pressure ده يعتبر Clinical surrogate للضغط لكن الـ Volume هو الـ Best index المباشر للـ Preload وبالتالي متنفعش</p></div>
+  </div>
+  <button class="show-exp-btn" onclick="showExplanation(this)" data-id="cvs_prev_exam2022_q101">&#128161; Show Explanation</button>
+  <button class="gpt-btn" onclick="askGPT(this)">&#128172; Ask GPT</button>
+</div>
+<div class="qcard" data-id="cvs_prev_exam2022_q102" data-type="mcq" data-correct="B" data-idx="14" data-subject="physio">
+<canvas class="qcard-canvas" data-qid="cvs_prev_exam2022_q102"></canvas>
+<div class="sticky-note" data-qid="cvs_prev_exam2022_q102">
+  <div class="sticky-note-header"><button class="note-close-btn" onclick="closeNote(this)">&#215;</button></div>
+  <canvas class="sticky-canvas" data-qid="cvs_prev_exam2022_q102" tabindex="0"></canvas>
+</div>
+  <div class="qcard-header">
+    <span class="q-num">Q14</span>
+    <div class="qcard-badges"></div>
+    <button class="star-btn" data-id="cvs_prev_exam2022_q102" onclick="toggleStar(this)" title="Star this question">☆</button>
+    <button class="sticky-note-btn" data-qid="cvs_prev_exam2022_q102" onclick="toggleNote(this)" title="Sticky note">&#128221;</button>
+  </div>
+  
+  <p class="q-text" dir="ltr">Which one of the following is the
+best index of afterload?</p>
+  <ul class="opts" dir="ltr" data-id="cvs_prev_exam2022_q102"><li class="opt" data-letter="A">A. Left ventricular end-diastolic 
+pressure.</li>
+<li class="opt is-correct" data-letter="B">B. Left ventricular mean systolic pressure.</li>
+<li class="opt" data-letter="C">C. Pulmonary 
+capillary pressure.</li>
+<li class="opt" data-letter="D">D. Total peripheral resistance.</li>
+<li class="opt" data-letter="E">E. Mean arterial 
+blood pressure.</li>
+</ul>
+  <div class="answer-block" data-id="cvs_prev_exam2022_q102">
+    <div class="answer-reveal">&#9989; Correct: B &mdash; Left ventricular mean systolic pressure.</div>
+    <div class="exp-label">الشرح</div>
+    <div class="explanation-ar" dir="rtl" lang="ar"><p>الـ Afterload هو الضغط والـ Wall tension اللي البطين بيولده  عشان يضخ الدم أثناء الـ Ejection وبالتالي الـ Left ventricular mean systolic  pressure هو أدق وأفضل مؤشر مباشر للـ Afterload وعشان كده B هي الإجابة الصح.</p><h4 class="exp-h">ليه الباقي غلط؟🤔</h4><p>A. Left ventricular end-diastolic pressure ده بيعبر عن الـ Preload مش الـ  Afterload وبالتالي متنفعش<br>C. Pulmonary capillary pressure ده بيعكس الـ Left atrial pressure والـ Preload  فبالتالي مش صح<br>D. Total peripheral resistance هو عامل من عوامل الـ Resistance بس مش أدق Index  مباشر للبطين فبالتالي متنفعش<br>E. Mean arterial blood pressure بيعبر عن ضغط الأورطة بس مش أدق من الـ  Ventricular pressure نفسه أثناء الانقباض وبالتالي متنفعش</p></div>
+  </div>
+  <button class="show-exp-btn" onclick="showExplanation(this)" data-id="cvs_prev_exam2022_q102">&#128161; Show Explanation</button>
+  <button class="gpt-btn" onclick="askGPT(this)">&#128172; Ask GPT</button>
+</div>
+<div class="qcard" data-id="cvs_prev_exam2022_q103" data-type="mcq" data-correct="A" data-idx="15" data-subject="physio">
+<canvas class="qcard-canvas" data-qid="cvs_prev_exam2022_q103"></canvas>
+<div class="sticky-note" data-qid="cvs_prev_exam2022_q103">
+  <div class="sticky-note-header"><button class="note-close-btn" onclick="closeNote(this)">&#215;</button></div>
+  <canvas class="sticky-canvas" data-qid="cvs_prev_exam2022_q103" tabindex="0"></canvas>
+</div>
+  <div class="qcard-header">
+    <span class="q-num">Q15</span>
+    <div class="qcard-badges"></div>
+    <button class="star-btn" data-id="cvs_prev_exam2022_q103" onclick="toggleStar(this)" title="Star this question">☆</button>
+    <button class="sticky-note-btn" data-qid="cvs_prev_exam2022_q103" onclick="toggleNote(this)" title="Sticky note">&#128221;</button>
+  </div>
+  
+  <p class="q-text" dir="ltr">Stroke volume is increased by:</p>
+  <ul class="opts" dir="ltr" data-id="cvs_prev_exam2022_q103"><li class="opt is-correct" data-letter="A">A. A decrease in venous compliance.</li>
+<li class="opt" data-letter="B">B. An increase in 
+afterload.</li>
+<li class="opt" data-letter="C">C. A decrease in contractility.</li>
+<li class="opt" data-letter="D">D. Heart rate.</li>
+<li class="opt" data-letter="E">E. Capillary permeability.</li>
+</ul>
+  <div class="answer-block" data-id="cvs_prev_exam2022_q103">
+    <div class="answer-reveal">&#9989; Correct: A &mdash; A decrease in venous compliance.</div>
+    <div class="exp-label">الشرح</div>
+    <div class="explanation-ar" dir="rtl" lang="ar"><p>تقليل الـ Venous compliance بيعمل Venoconstriction وده بيزود الـ Venous return والـ EDV فيزود الـ Stroke volume طبقاً لـ Frank-Starling law  وبالتالي A هي الصح.</p><h4 class="exp-h">ليه الباقي غلط؟🤔</h4><p>B. An increase in afterload بيعوق الـ Ejection ويقلل الـ Stroke volume فبالتالي  مش صح<br>C. A decrease in contractility بيضعف انقباض العضلة ويقلل الـ Stroke volume  فبالتالي متنفعش<br>D. Heart rate زيادته بتقصر الـ Diastolic filling time فتقلل الـ Stroke volume  فبالتالي متنفعش معانا<br>E. Capillary permeability زيادتها بتهرب السوائل للـ Interstitium وتقلل الـ Blood volume والـ SV فبالتالي مش صح</p></div>
+  </div>
+  <button class="show-exp-btn" onclick="showExplanation(this)" data-id="cvs_prev_exam2022_q103">&#128161; Show Explanation</button>
+  <button class="gpt-btn" onclick="askGPT(this)">&#128172; Ask GPT</button>
+</div>
+<div class="qcard" data-id="cvs_prev_exam2022_q104" data-type="mcq" data-correct="D" data-idx="16" data-subject="physio">
+<canvas class="qcard-canvas" data-qid="cvs_prev_exam2022_q104"></canvas>
+<div class="sticky-note" data-qid="cvs_prev_exam2022_q104">
+  <div class="sticky-note-header"><button class="note-close-btn" onclick="closeNote(this)">&#215;</button></div>
+  <canvas class="sticky-canvas" data-qid="cvs_prev_exam2022_q104" tabindex="0"></canvas>
+</div>
+  <div class="qcard-header">
+    <span class="q-num">Q16</span>
+    <div class="qcard-badges"></div>
+    <button class="star-btn" data-id="cvs_prev_exam2022_q104" onclick="toggleStar(this)" title="Star this question">☆</button>
+    <button class="sticky-note-btn" data-qid="cvs_prev_exam2022_q104" onclick="toggleNote(this)" title="Sticky note">&#128221;</button>
+  </div>
+  
+  <p class="q-text" dir="ltr">In a resting healthy man, the 
+ejection fraction is approximately:</p>
+  <ul class="opts" dir="ltr" data-id="cvs_prev_exam2022_q104"><li class="opt" data-letter="A">A. 0.1.</li>
+<li class="opt" data-letter="B">B. 0.2.</li>
+<li class="opt" data-letter="C">C. 0.3.</li>
+<li class="opt is-correct" data-letter="D">D. 0.6.</li>
+<li class="opt" data-letter="E">E. 0.9.</li>
+</ul>
+  <div class="answer-block" data-id="cvs_prev_exam2022_q104">
+    <div class="answer-reveal">&#9989; Correct: D &mdash; 0.6.</div>
+    <div class="exp-label">الشرح</div>
+    <div class="explanation-ar" dir="rtl" lang="ar"><p>الـ Ejection fraction في الشخص الطبيعي وقت الراحة بيكون  بنسبة تتراوح بين 50% لـ 65% (يعني حوالي 0.6) وبالتالي D هي الإجابة الصح.</p><h4 class="exp-h">ليه الباقي غلط؟🤔</h4><p>A. 0.1 B. 0.2 C. 0.3 دول نسب منخفضة جداً بتدل على Severe systolic heart failure وبالتالي مش هينفعوا  معانا<br>E. 0.9 دي نسبة مرتفعة جداً وغير طبيعية في وضع الراحة فبالتالي متنفعش</p></div>
+  </div>
+  <button class="show-exp-btn" onclick="showExplanation(this)" data-id="cvs_prev_exam2022_q104">&#128161; Show Explanation</button>
+  <button class="gpt-btn" onclick="askGPT(this)">&#128172; Ask GPT</button>
+</div>
+<div class="qcard" data-id="cvs_prev_exam2022_q105" data-type="mcq" data-correct="B" data-idx="17" data-subject="physio">
+<canvas class="qcard-canvas" data-qid="cvs_prev_exam2022_q105"></canvas>
+<div class="sticky-note" data-qid="cvs_prev_exam2022_q105">
+  <div class="sticky-note-header"><button class="note-close-btn" onclick="closeNote(this)">&#215;</button></div>
+  <canvas class="sticky-canvas" data-qid="cvs_prev_exam2022_q105" tabindex="0"></canvas>
+</div>
+  <div class="qcard-header">
+    <span class="q-num">Q17</span>
+    <div class="qcard-badges"></div>
+    <button class="star-btn" data-id="cvs_prev_exam2022_q105" onclick="toggleStar(this)" title="Star this question">☆</button>
+    <button class="sticky-note-btn" data-qid="cvs_prev_exam2022_q105" onclick="toggleNote(this)" title="Sticky note">&#128221;</button>
+  </div>
+  
+  <p class="q-text" dir="ltr">Increasing vagal 
+stimulation of the heart will cause an increase in:</p>
+  <ul class="opts" dir="ltr" data-id="cvs_prev_exam2022_q105"><li class="opt" data-letter="A">A. Heart 
+rate.</li>
+<li class="opt is-correct" data-letter="B">B. P-R interval.</li>
+<li class="opt" data-letter="C">C. Ventricular contractility.</li>
+<li class="opt" data-letter="D">D. Ejection 
+fraction.</li>
+<li class="opt" data-letter="E">E. Cardiac output.</li>
+</ul>
+  <div class="answer-block" data-id="cvs_prev_exam2022_q105">
+    <div class="answer-reveal">&#9989; Correct: B &mdash; P-R interval.</div>
+    <div class="exp-label">الشرح</div>
+    <div class="explanation-ar" dir="rtl" lang="ar"><p>زيادة الـ Vagal stimulation بتبطأ الـ Conduction velocity في الـ A-V node وده بيزود وقت الـ AV delay فيزود الـ P-R interval وبالتالي B هي  الإجابة الصح.</p><h4 class="exp-h">ليه الباقي غلط؟🤔</h4><p>A. Heart rate C. Ventricular contractility D. Ejection fraction E. Cardiac  output دول كلهم بيقلوا نتيجة الـ Parasympathetic effect للـ Vagus nerve مش بيزيدوا  فبالتالي مش هينفعوا معانا</p></div>
+  </div>
+  <button class="show-exp-btn" onclick="showExplanation(this)" data-id="cvs_prev_exam2022_q105">&#128161; Show Explanation</button>
+  <button class="gpt-btn" onclick="askGPT(this)">&#128172; Ask GPT</button>
+</div>
+<div class="qcard" data-id="cvs_prev_exam2022_q106" data-type="mcq" data-correct="E" data-idx="18" data-subject="physio">
+<canvas class="qcard-canvas" data-qid="cvs_prev_exam2022_q106"></canvas>
+<div class="sticky-note" data-qid="cvs_prev_exam2022_q106">
+  <div class="sticky-note-header"><button class="note-close-btn" onclick="closeNote(this)">&#215;</button></div>
+  <canvas class="sticky-canvas" data-qid="cvs_prev_exam2022_q106" tabindex="0"></canvas>
+</div>
+  <div class="qcard-header">
+    <span class="q-num">Q18</span>
+    <div class="qcard-badges"></div>
+    <button class="star-btn" data-id="cvs_prev_exam2022_q106" onclick="toggleStar(this)" title="Star this question">☆</button>
+    <button class="sticky-note-btn" data-qid="cvs_prev_exam2022_q106" onclick="toggleNote(this)" title="Sticky note">&#128221;</button>
+  </div>
+  
+  <p class="q-text" dir="ltr">The highest blood flow
+of left ventricular myocardium occur:</p>
+  <ul class="opts" dir="ltr" data-id="cvs_prev_exam2022_q106"><li class="opt" data-letter="A">A. When aortic pressure 
+is highest.</li>
+<li class="opt" data-letter="B">B. When left ventricular pressure is highest.</li>
+<li class="opt" data-letter="C">C. At the 
+beginning of isovolumetric contraction.</li>
+<li class="opt" data-letter="D">D. When aortic blood flow is 
+highest.</li>
+<li class="opt is-correct" data-letter="E">E. At the beginning of diastole.</li>
+</ul>
+  <div class="answer-block" data-id="cvs_prev_exam2022_q106">
+    <div class="answer-reveal">&#9989; Correct: E &mdash; At the beginning of diastole.</div>
+    <div class="exp-label">الشرح</div>
+    <div class="explanation-ar" dir="rtl" lang="ar"><p>أعلى تدفق دم للـ Left ventricular myocardium بيحصل عند الـ  Beginning of diastole لأن انقباض العضلة بيتوقف والـ Extravascular compression  بيقل جداً وبالتالي E هي الإجابة الصح.</p><h4 class="exp-h">ليه الباقي غلط؟🤔</h4><p>A. When aortic pressure is highest دي بتتحقق في الـ Systole والـ Compression  بيقلل الـ Flow وبالتالي متنفعش<br>B. When left ventricular pressure is highest أقصى انقباض بيعمل أقصى Compression  على الـ Coronaries فبالتالي مش صح<br>C. At the beginning of isovolumetric contraction ده بداية الـ Systole والـ  Compression بيبدأ يزيد وبالتالي متنفعش معانا<br>D. When aortic blood flow is highest ده بيحصل في الـ Systole مع وجود Compression عالي للـ Ventricle وبالتالي متنفعش</p></div>
+  </div>
+  <button class="show-exp-btn" onclick="showExplanation(this)" data-id="cvs_prev_exam2022_q106">&#128161; Show Explanation</button>
+  <button class="gpt-btn" onclick="askGPT(this)">&#128172; Ask GPT</button>
+</div>
+<div class="qcard" data-id="cvs_prev_exam2022_q107" data-type="mcq" data-correct="C" data-idx="19" data-subject="physio">
+<canvas class="qcard-canvas" data-qid="cvs_prev_exam2022_q107"></canvas>
+<div class="sticky-note" data-qid="cvs_prev_exam2022_q107">
+  <div class="sticky-note-header"><button class="note-close-btn" onclick="closeNote(this)">&#215;</button></div>
+  <canvas class="sticky-canvas" data-qid="cvs_prev_exam2022_q107" tabindex="0"></canvas>
+</div>
+  <div class="qcard-header">
+    <span class="q-num">Q19</span>
+    <div class="qcard-badges"></div>
+    <button class="star-btn" data-id="cvs_prev_exam2022_q107" onclick="toggleStar(this)" title="Star this question">☆</button>
+    <button class="sticky-note-btn" data-qid="cvs_prev_exam2022_q107" onclick="toggleNote(this)" title="Sticky note">&#128221;</button>
+  </div>
+  
+  <p class="q-text" dir="ltr">During ventricular ejection, the pressure difference smallest in magnitude is 
+between the:</p>
+  <ul class="opts" dir="ltr" data-id="cvs_prev_exam2022_q107"><li class="opt" data-letter="A">A. Pulmonary artery and left atrium.</li>
+<li class="opt" data-letter="B">B. Right
+ventricle and right atrium.</li>
+<li class="opt is-correct" data-letter="C">C. Left ventricle and aorta.</li>
+<li class="opt" data-letter="D">D. Left 
+ventricle and left atrium.</li>
+<li class="opt" data-letter="E">E. Aorta and capillaries.</li>
+</ul>
+  <div class="answer-block" data-id="cvs_prev_exam2022_q107">
+    <div class="answer-reveal">&#9989; Correct: C &mdash; Left ventricle and aorta.</div>
+    <div class="exp-label">الشرح</div>
+    <div class="explanation-ar" dir="rtl" lang="ar"><p>أثناء الـ Ventricular ejection بيكون الـ Aortic valve مفتوح  تماماً، والضغط جوة الـ Left ventricle والـ Aorta متساوي تقريباً والفرق بينهم بيبقى صغير جداً (بضعة مم زئبق) وبالتالي C هي الصح.</p><h4 class="exp-h">ليه الباقي غلط؟🤔</h4><p>A. Pulmonary artery and left atrium فرق الضغط بينهم أكبر من الفرق بين البطين  والأورطي فبالتالي متنفعش<br>B. Right ventricle and right atrium D. Left ventricle and left atrium دول الـ AV valves بتكون مقفولة وفرق الضغط بين البطين والأذين بيبقى كبير جداً  أثناء الانقباض وبالتالي مش صح<br>E. Aorta and capillaries فرق الضغط بينهم كبير جداً عشان يحرك الدم في الـ Systemic circulation فبالتالي متنفعش</p></div>
+  </div>
+  <button class="show-exp-btn" onclick="showExplanation(this)" data-id="cvs_prev_exam2022_q107">&#128161; Show Explanation</button>
+  <button class="gpt-btn" onclick="askGPT(this)">&#128172; Ask GPT</button>
+</div>
+<div class="qcard" data-id="cvs_prev_exam2022_q108" data-type="mcq" data-correct="B" data-idx="20" data-subject="physio">
+<canvas class="qcard-canvas" data-qid="cvs_prev_exam2022_q108"></canvas>
+<div class="sticky-note" data-qid="cvs_prev_exam2022_q108">
+  <div class="sticky-note-header"><button class="note-close-btn" onclick="closeNote(this)">&#215;</button></div>
+  <canvas class="sticky-canvas" data-qid="cvs_prev_exam2022_q108" tabindex="0"></canvas>
+</div>
+  <div class="qcard-header">
+    <span class="q-num">Q20</span>
+    <div class="qcard-badges"></div>
+    <button class="star-btn" data-id="cvs_prev_exam2022_q108" onclick="toggleStar(this)" title="Star this question">☆</button>
+    <button class="sticky-note-btn" data-qid="cvs_prev_exam2022_q108" onclick="toggleNote(this)" title="Sticky note">&#128221;</button>
+  </div>
+  
+  <p class="q-text" dir="ltr">An increased preload would most likely be caused by an increase in:</p>
+  <ul class="opts" dir="ltr" data-id="cvs_prev_exam2022_q108"><li class="opt" data-letter="A">A. Arteriolar tone.</li>
+<li class="opt is-correct" data-letter="B">B. Venous tone.</li>
+<li class="opt" data-letter="C">C. Myocardial 
+contractility.</li>
+<li class="opt" data-letter="D">D. Heart rate.</li>
+<li class="opt" data-letter="E">E. Capillary permeability.</li>
+</ul>
+  <div class="answer-block" data-id="cvs_prev_exam2022_q108">
+    <div class="answer-reveal">&#9989; Correct: B &mdash; Venous tone.</div>
+    <div class="exp-label">الشرح</div>
+    <div class="explanation-ar" dir="rtl" lang="ar"><p>زيادة الـ Venous tone بتعمل Venoconstriction وده بيزود الـ  Venous return للقلب وبالتالي بيزود الـ End-diastolic volume والـ Preload فتبقى B هي الصح.</p><h4 class="exp-h">ليه الباقي غلط؟🤔</h4><p>A. Arteriolar tone بتزود الـ Resistance والـ Afterload وتقلل الـ Venous return  وبالتالي متنفعش معانا<br>C. Myocardial contractility بتزود قوة الانقباض والـ Stroke volume مش هي السبب في زيادة الـ Preload فبالتالي مش صح<br>D. Heart rate زيادته بتقصر الـ Diastolic filling time فتقلل الـ Preload وبالتالي متنفعش<br>E. Capillary permeability زيادتها بتهرب السوائل برة الأوعية وتقلل الـ Blood  volume والـ Preload وبالتالي مش معانا</p></div>
+  </div>
+  <button class="show-exp-btn" onclick="showExplanation(this)" data-id="cvs_prev_exam2022_q108">&#128161; Show Explanation</button>
+  <button class="gpt-btn" onclick="askGPT(this)">&#128172; Ask GPT</button>
+</div>
+<div class="qcard" data-id="cvs_prev_exam2022_q109" data-type="mcq" data-correct="D" data-idx="21" data-subject="physio">
+<canvas class="qcard-canvas" data-qid="cvs_prev_exam2022_q109"></canvas>
+<div class="sticky-note" data-qid="cvs_prev_exam2022_q109">
+  <div class="sticky-note-header"><button class="note-close-btn" onclick="closeNote(this)">&#215;</button></div>
+  <canvas class="sticky-canvas" data-qid="cvs_prev_exam2022_q109" tabindex="0"></canvas>
+</div>
+  <div class="qcard-header">
+    <span class="q-num">Q21</span>
+    <div class="qcard-badges"></div>
+    <button class="star-btn" data-id="cvs_prev_exam2022_q109" onclick="toggleStar(this)" title="Star this question">☆</button>
+    <button class="sticky-note-btn" data-qid="cvs_prev_exam2022_q109" onclick="toggleNote(this)" title="Sticky note">&#128221;</button>
+  </div>
+  
+  <p class="q-text" dir="ltr">Propagation of the action potential through the heart is faster in the:</p>
+  <ul class="opts" dir="ltr" data-id="cvs_prev_exam2022_q109"><li class="opt" data-letter="A">A. S-A node.</li>
+<li class="opt" data-letter="B">B. Atrial muscle.</li>
+<li class="opt" data-letter="C">C. A-V node.</li>
+<li class="opt is-correct" data-letter="D">D. Purkinje fibers.</li>
+<li class="opt" data-letter="E">E. Ventricular muscle</li>
+</ul>
+  <div class="answer-block" data-id="cvs_prev_exam2022_q109">
+    <div class="answer-reveal">&#9989; Correct: D &mdash; Purkinje fibers.</div>
+    <div class="exp-label">الشرح</div>
+    <div class="explanation-ar" dir="rtl" lang="ar"><p>سرعة توصيل الـ Action potential في أجزاء القلب كالتالي:<br>1- Purkinje fibers هي الأسرع وتبلغ 4 m/sec<br>2- Atrial &amp; Ventricular muscle وتبلغ 1 m/sec<br>3- S-A node &amp; A-V node دول الأبطأ بـ 0.05 m/sec</p><p>نظرا للاختيارات المعطاة فالإجابة الصحيحة هتكون D - Purkinje fibers</p><h4 class="exp-h">ليه الباقي غلط؟🤔</h4><p>A. S-A node C. A-V node دول الأبطأ بـ 0.05 m/sec وبالتالي مش هينفعوا<br>B. Atrial muscle E. Ventricular muscle دول سرعتهم 1 m/sec فبالتالي أقل بكتير  ومش صح</p></div>
+  </div>
+  <button class="show-exp-btn" onclick="showExplanation(this)" data-id="cvs_prev_exam2022_q109">&#128161; Show Explanation</button>
+  <button class="gpt-btn" onclick="askGPT(this)">&#128172; Ask GPT</button>
+</div>
+<div class="qcard" data-id="cvs_prev_exam2022_q110" data-type="mcq" data-correct="D" data-idx="22" data-subject="physio">
+<canvas class="qcard-canvas" data-qid="cvs_prev_exam2022_q110"></canvas>
+<div class="sticky-note" data-qid="cvs_prev_exam2022_q110">
+  <div class="sticky-note-header"><button class="note-close-btn" onclick="closeNote(this)">&#215;</button></div>
+  <canvas class="sticky-canvas" data-qid="cvs_prev_exam2022_q110" tabindex="0"></canvas>
+</div>
+  <div class="qcard-header">
+    <span class="q-num">Q22</span>
+    <div class="qcard-badges"></div>
+    <button class="star-btn" data-id="cvs_prev_exam2022_q110" onclick="toggleStar(this)" title="Star this question">☆</button>
+    <button class="sticky-note-btn" data-qid="cvs_prev_exam2022_q110" onclick="toggleNote(this)" title="Sticky note">&#128221;</button>
+  </div>
+  
+  <p class="q-text" dir="ltr">Closure of aortic 
+valve occurs at the onset of which phase of the cardiac cycle?</p>
+  <ul class="opts" dir="ltr" data-id="cvs_prev_exam2022_q110"><li class="opt" data-letter="A">A. Iso-volumetric contraction.</li>
+<li class="opt" data-letter="B">B. Rapid ejection.</li>
+<li class="opt" data-letter="C">C. Protodiastolic.</li>
+<li class="opt is-correct" data-letter="D">D. Iso-volumetric relaxation.</li>
+<li class="opt" data-letter="E">E. Rapid filling.</li>
+</ul>
+  <div class="answer-block" data-id="cvs_prev_exam2022_q110">
+    <div class="answer-reveal">&#9989; Correct: D &mdash; Iso-volumetric relaxation.</div>
+    <div class="exp-label">الشرح</div>
+    <div class="explanation-ar" dir="rtl" lang="ar"><p>قفل الـ Aortic valve بيمثل بداية الـ Iso-volumetric  relaxation phase لأن وقتها كل الصمامات بتقفل والبطين بيرخي بدون تغيير في  الفوليوم وبالتالي D هي الصح.</p><h4 class="exp-h">ليه الباقي غلط؟🤔</h4><p>A. Iso-volumetric contraction بتبدأ بقفل الـ Mitral valve وبالتالي متنفعش معانا.<br>B. Rapid ejection بتبدأ بفتح الـ Aortic valve مش بقفله فبالتالي مش صح.<br>C. Protodiastolic بتنتهي بقفل الـ Aortic valve مش بتبدأ بيه فبالتالي مش مظبوطة.<br>E. Rapid filling بتبدأ بفتح الـ Mitral valve وبالتالي متنفعش.</p></div>
+  </div>
+  <button class="show-exp-btn" onclick="showExplanation(this)" data-id="cvs_prev_exam2022_q110">&#128161; Show Explanation</button>
+  <button class="gpt-btn" onclick="askGPT(this)">&#128172; Ask GPT</button>
+</div>
+<div class="qcard" data-id="cvs_prev_exam2022_q111" data-type="mcq" data-correct="A" data-idx="23" data-subject="physio">
+<canvas class="qcard-canvas" data-qid="cvs_prev_exam2022_q111"></canvas>
+<div class="sticky-note" data-qid="cvs_prev_exam2022_q111">
+  <div class="sticky-note-header"><button class="note-close-btn" onclick="closeNote(this)">&#215;</button></div>
+  <canvas class="sticky-canvas" data-qid="cvs_prev_exam2022_q111" tabindex="0"></canvas>
+</div>
+  <div class="qcard-header">
+    <span class="q-num">Q23</span>
+    <div class="qcard-badges"></div>
+    <button class="star-btn" data-id="cvs_prev_exam2022_q111" onclick="toggleStar(this)" title="Star this question">☆</button>
+    <button class="sticky-note-btn" data-qid="cvs_prev_exam2022_q111" onclick="toggleNote(this)" title="Sticky note">&#128221;</button>
+  </div>
+  
+  <p class="q-text" dir="ltr">Phase 0 depolarization of S-A nodal cells is 
+caused by:</p>
+  <ul class="opts" dir="ltr" data-id="cvs_prev_exam2022_q111"><li class="opt is-correct" data-letter="A">A. An increase in the flow of Na into the cell.</li>
+<li class="opt" data-letter="B">B. A decrease in the flow of K out of the cell.</li>
+<li class="opt" data-letter="C">C. An increase in the 
+activity of Na+/Ca2+ exchanger.</li>
+<li class="opt" data-letter="D">D. A decrease in the flow of Cl out of the 
+cell.</li>
+<li class="opt" data-letter="E">E. A decrease in the activity of Na+-K+ pump.</li>
+</ul>
+  <div class="answer-block" data-id="cvs_prev_exam2022_q111">
+    <div class="answer-reveal">&#9989; Correct: A &mdash; An increase in the flow of Na into the cell.</div>
+    <div class="exp-label">الشرح</div>
+    <div class="explanation-ar" dir="rtl" lang="ar"><p>الـ Phase 0 depolarization في الـ S-A nodal cells بتحصل بسبب الـ Inward current وحركة الأيونات الموجبة (زي الـ Na+ والـ Ca2+ influx) لداخل  الخلية وبالتالي A هي الإجابة الصح.</p><h4 class="exp-h">ليه الباقي غلط؟🤔</h4><p>B. A decrease in the flow of K out of the cell ده بيشارك في الـ Pacemaker  potential في Phase 4 مش Phase 0 وبالتالي متنفعش.<br>C. An increase in the activity of Na+/Ca2+ exchanger ده بيبدّل الأيونات في نهاية Phase 4 ومش هو السبب الرئيسي لـ Upstroke بتاع Phase 0 فبالتالي مش صح.<br>D. A decrease in the flow of Cl out of the cell الـ Cl- ملوش دور أساسي في الـ  Phase 0 depolarization وبالتالي متنفعش معانا.<br>E. A decrease in the activity of Na+-K+ pump المضخة دي بتحافظ على الـ Ionic  gradients وملهاش دور مباشر في توليد Phase 0 وبالتالي مش صح.</p></div>
+  </div>
+  <button class="show-exp-btn" onclick="showExplanation(this)" data-id="cvs_prev_exam2022_q111">&#128161; Show Explanation</button>
+  <button class="gpt-btn" onclick="askGPT(this)">&#128172; Ask GPT</button>
+</div>
+<div class="qcard" data-id="cvs_prev_exam2022_q112" data-type="mcq" data-correct="C" data-idx="24" data-subject="physio">
+<canvas class="qcard-canvas" data-qid="cvs_prev_exam2022_q112"></canvas>
+<div class="sticky-note" data-qid="cvs_prev_exam2022_q112">
+  <div class="sticky-note-header"><button class="note-close-btn" onclick="closeNote(this)">&#215;</button></div>
+  <canvas class="sticky-canvas" data-qid="cvs_prev_exam2022_q112" tabindex="0"></canvas>
+</div>
+  <div class="qcard-header">
+    <span class="q-num">Q24</span>
+    <div class="qcard-badges"></div>
+    <button class="star-btn" data-id="cvs_prev_exam2022_q112" onclick="toggleStar(this)" title="Star this question">☆</button>
+    <button class="sticky-note-btn" data-qid="cvs_prev_exam2022_q112" onclick="toggleNote(this)" title="Sticky note">&#128221;</button>
+  </div>
+  
+  <p class="q-text" dir="ltr">The dicrotic notch on the aortic pressure curve is caused by:</p>
+  <ul class="opts" dir="ltr" data-id="cvs_prev_exam2022_q112"><li class="opt" data-letter="A">A. Closure of the mitral valve.</li>
+<li class="opt" data-letter="B">B. Closure of the tricuspid valve.</li>
+<li class="opt is-correct" data-letter="C">C. Closure of the aortic valve.</li>
+<li class="opt" data-letter="D">D. Closure of the pulmonary valve.</li>
+<li class="opt" data-letter="E">E. Rapid filling of the left ventricle.</li>
+</ul>
+  <div class="answer-block" data-id="cvs_prev_exam2022_q112">
+    <div class="answer-reveal">&#9989; Correct: C &mdash; Closure of the aortic valve.</div>
+    <div class="exp-label">الشرح</div>
+    <div class="explanation-ar" dir="rtl" lang="ar"><p>الـ Dicrotic notch على الـ Aortic pressure curve بيحصل  مباشرة بسبب الـ Closure of the aortic valve عند نهاية الـ Ejection phase  وبالتالي C هي الإجابة الصح.</p><h4 class="exp-h">ليه الباقي غلط؟🤔</h4><p>A. Closure of the mitral valve B. Closure of the tricuspid valve دول قفلهم بيعمل الـ First heart sound في بداية الـ Systole فبالتالي متنفعش<br>D. Closure of the pulmonary valve ده بيحصل في الـ Right side وبيأثر على الـ  Pulmonary artery curve مش الـ Aorta فبالتالي مش صح<br>E. Rapid filling of the left ventricle دي مرحلة تدفق الدم للبطين في الـ Diastole ومش بتسبب الـ Notch وبالتالي مش معانا</p></div>
+  </div>
+  <button class="show-exp-btn" onclick="showExplanation(this)" data-id="cvs_prev_exam2022_q112">&#128161; Show Explanation</button>
+  <button class="gpt-btn" onclick="askGPT(this)">&#128172; Ask GPT</button>
+</div>
+<div class="qcard" data-id="cvs_prev_exam2022_q113" data-type="mcq" data-correct="D" data-idx="25" data-subject="physio">
+<canvas class="qcard-canvas" data-qid="cvs_prev_exam2022_q113"></canvas>
+<div class="sticky-note" data-qid="cvs_prev_exam2022_q113">
+  <div class="sticky-note-header"><button class="note-close-btn" onclick="closeNote(this)">&#215;</button></div>
+  <canvas class="sticky-canvas" data-qid="cvs_prev_exam2022_q113" tabindex="0"></canvas>
+</div>
+  <div class="qcard-header">
+    <span class="q-num">Q25</span>
+    <div class="qcard-badges"></div>
+    <button class="star-btn" data-id="cvs_prev_exam2022_q113" onclick="toggleStar(this)" title="Star this question">☆</button>
+    <button class="sticky-note-btn" data-qid="cvs_prev_exam2022_q113" onclick="toggleNote(this)" title="Sticky note">&#128221;</button>
+  </div>
+  
+  <p class="q-text" dir="ltr">If the baroreceptor 
+reflexes are fully functional when upright posture is assumed:</p>
+  <ul class="opts" dir="ltr" data-id="cvs_prev_exam2022_q113"><li class="opt" data-letter="A">A. The blood vessels of the arms will become vasodilated.</li>
+<li class="opt" data-letter="B">B. Arterial 
+pressure in the foot will be maintained at 120/80 mmHg.</li>
+<li class="opt" data-letter="C">C. Bradycardia will
+occur.</li>
+<li class="opt is-correct" data-letter="D">D. Cerebral blood flow will not change appreciably.</li>
+<li class="opt" data-letter="E">E. Inhibition of the vagal center.</li>
+</ul>
+  <div class="answer-block" data-id="cvs_prev_exam2022_q113">
+    <div class="answer-reveal">&#9989; Correct: D &mdash; Cerebral blood flow will not change appreciably.</div>
+    <div class="exp-label">الشرح</div>
+    <div class="explanation-ar" dir="rtl" lang="ar"><p>لما بنقف الـ Baroreceptor reflex بيشتغل بسرعة ويرجع الـ Mean arterial pressure للمعدل الطبيعي وبالتالي الـ Cerebral blood flow مش بيتغير بشكل ملحوظ وعشان كده D هي الإجابة الصح.</p><h4 class="exp-h">ليه الباقي غلط؟🤔</h4><p>A. Blood vessels of the arms بيحصل فيها Vasoconstriction مش Vasodilation عشان  ترفع الضغط وبالتالي متنفعش<br>B. Arterial pressure in the foot بيزيد بفضل الـ Gravity لـ 180 mmHg تقريباً مش  120/80 فبالتالي مش صح<br>C. بيحصل Tachycardia مش Bradycardia نتيجة زيادة الـ Sympathetic activity  وبالتالي مش معانا<br>E. Inhibition of the vagal center هي مجرد خطوة جوة الميكانيزم بس النتيجة  النهائية الهامة هي الحفاظ على الـ Cerebral blood flow فبالتالي D أصح</p></div>
+  </div>
+  <button class="show-exp-btn" onclick="showExplanation(this)" data-id="cvs_prev_exam2022_q113">&#128161; Show Explanation</button>
+  <button class="gpt-btn" onclick="askGPT(this)">&#128172; Ask GPT</button>
+</div>
+<div class="qcard" data-id="cvs_prev_exam2022_q114" data-type="mcq" data-correct="D" data-idx="26" data-subject="physio">
+<canvas class="qcard-canvas" data-qid="cvs_prev_exam2022_q114"></canvas>
+<div class="sticky-note" data-qid="cvs_prev_exam2022_q114">
+  <div class="sticky-note-header"><button class="note-close-btn" onclick="closeNote(this)">&#215;</button></div>
+  <canvas class="sticky-canvas" data-qid="cvs_prev_exam2022_q114" tabindex="0"></canvas>
+</div>
+  <div class="qcard-header">
+    <span class="q-num">Q26</span>
+    <div class="qcard-badges"></div>
+    <button class="star-btn" data-id="cvs_prev_exam2022_q114" onclick="toggleStar(this)" title="Star this question">☆</button>
+    <button class="sticky-note-btn" data-qid="cvs_prev_exam2022_q114" onclick="toggleNote(this)" title="Sticky note">&#128221;</button>
+  </div>
+  
+  <p class="q-text" dir="ltr">The pulmonary and 
+systemic circulations have the same:</p>
+  <ul class="opts" dir="ltr" data-id="cvs_prev_exam2022_q114"><li class="opt" data-letter="A">A. Mean pressure.</li>
+<li class="opt" data-letter="B">B. Vascular resistance.</li>
+<li class="opt" data-letter="C">C. Compliance.</li>
+<li class="opt is-correct" data-letter="D">D. Flow per minute.</li>
+<li class="opt" data-letter="E">E. Hypoxic vasoconstrictor response</li>
+</ul>
+  <div class="answer-block" data-id="cvs_prev_exam2022_q114">
+    <div class="answer-reveal">&#9989; Correct: D &mdash; Flow per minute.</div>
+    <div class="exp-label">الشرح</div>
+    <div class="explanation-ar" dir="rtl" lang="ar"><p>الـ Pulmonary circulation والـ Systemic circulation متوصلين  In series وبالتالي كمية الـ Cardiac output أو الـ Flow per minute بتكون متساوية  في الاتنين وبناء عليه D هي الصح.</p><h4 class="exp-h">ليه الباقي غلط؟🤔</h4><p>A. Mean pressure أصل الـ Mean pressure أعلى بكتير في الـ Systemic مقارنة بالـ  Pulmonary فبالتالي مش صح<br>B. Vascular resistance دي أعلى بكتير في الـ Systemic circulation وبالتالي متنفعش<br>C. Compliance الأوعية في الـ Pulmonary circulation أعلى في الـ Compliance  فبالتالي مش متساويين<br>E. Hypoxic vasoconstrictor response ده بيحصل في الـ Pulmonary بس بينما الـ  Systemic بيحصل فيه Vasodilation فبالتالي متنفعش معانا</p></div>
+  </div>
+  <button class="show-exp-btn" onclick="showExplanation(this)" data-id="cvs_prev_exam2022_q114">&#128161; Show Explanation</button>
+  <button class="gpt-btn" onclick="askGPT(this)">&#128172; Ask GPT</button>
+</div>
+<div class="qcard" data-id="cvs_prev_exam2022_q115" data-type="mcq" data-correct="E" data-idx="27" data-subject="physio">
+<canvas class="qcard-canvas" data-qid="cvs_prev_exam2022_q115"></canvas>
+<div class="sticky-note" data-qid="cvs_prev_exam2022_q115">
+  <div class="sticky-note-header"><button class="note-close-btn" onclick="closeNote(this)">&#215;</button></div>
+  <canvas class="sticky-canvas" data-qid="cvs_prev_exam2022_q115" tabindex="0"></canvas>
+</div>
+  <div class="qcard-header">
+    <span class="q-num">Q27</span>
+    <div class="qcard-badges"></div>
+    <button class="star-btn" data-id="cvs_prev_exam2022_q115" onclick="toggleStar(this)" title="Star this question">☆</button>
+    <button class="sticky-note-btn" data-qid="cvs_prev_exam2022_q115" onclick="toggleNote(this)" title="Sticky note">&#128221;</button>
+  </div>
+  
+  <p class="q-text" dir="ltr">Oxygen blood supply 
+to the heart depends on:</p>
+  <ul class="opts" dir="ltr" data-id="cvs_prev_exam2022_q115"><li class="opt" data-letter="A">A. Blood acidity.</li>
+<li class="opt" data-letter="B">B. Sympathetic 
+tone.</li>
+<li class="opt" data-letter="C">C. Blood viscosity.</li>
+<li class="opt" data-letter="D">D. Heart rate.</li>
+<li class="opt is-correct" data-letter="E">E. Hemoglobin 
+concentration.</li>
+</ul>
+  <div class="answer-block" data-id="cvs_prev_exam2022_q115">
+    <div class="answer-reveal">&#9989; Correct: E &mdash; Hemoglobin 
+concentration.</div>
+    <div class="exp-label">الشرح</div>
+    <div class="explanation-ar" dir="rtl" lang="ar"><p>إمداد القلب بالأكسجين Oxygen blood supply بيعتمد على الـ  Coronary blood flow وعلى كمية الأكسجين المحمولة في الدم اللي بيحددها تركيز  الهيموجلوبين Hemoglobin concentration وبالتالي E هي الإجابة الصح.</p><h4 class="exp-h">ليه الباقي غلط؟🤔</h4><p>A. Blood acidity بتأثر على الـ Oxygen dissociation curve مش على إجمالي الـ  Oxygen supply المباشر وبالتالي متنفعش<br>B. Sympathetic tone بتأثر على الـ HR والـ Contractility وتزود الـ Oxygen demand  مش الـ Supply فبالتالي مش صح<br>C. Blood viscosity بتأثر على مقاومة الأوعية مش هي المحدد المباشر لكمية الأكسجين  المحمول فبالتالي متنفعش معانا<br>D. Heart rate زيادته بتقصر وقت الـ Diastole وتقلل الـ Coronary blood flow وتزود  الـ Demand وبالتالي مش صح</p></div>
+  </div>
+  <button class="show-exp-btn" onclick="showExplanation(this)" data-id="cvs_prev_exam2022_q115">&#128161; Show Explanation</button>
+  <button class="gpt-btn" onclick="askGPT(this)">&#128172; Ask GPT</button>
+</div>
+<div class="qcard" data-id="cvs_prev_exam2022_q116" data-type="mcq" data-correct="D" data-idx="28" data-subject="physio">
+<canvas class="qcard-canvas" data-qid="cvs_prev_exam2022_q116"></canvas>
+<div class="sticky-note" data-qid="cvs_prev_exam2022_q116">
+  <div class="sticky-note-header"><button class="note-close-btn" onclick="closeNote(this)">&#215;</button></div>
+  <canvas class="sticky-canvas" data-qid="cvs_prev_exam2022_q116" tabindex="0"></canvas>
+</div>
+  <div class="qcard-header">
+    <span class="q-num">Q28</span>
+    <div class="qcard-badges"></div>
+    <button class="star-btn" data-id="cvs_prev_exam2022_q116" onclick="toggleStar(this)" title="Star this question">☆</button>
+    <button class="sticky-note-btn" data-qid="cvs_prev_exam2022_q116" onclick="toggleNote(this)" title="Sticky note">&#128221;</button>
+  </div>
+  
+  <p class="q-text" dir="ltr">Blood flow becomes turbulent 
+when:</p>
+  <ul class="opts" dir="ltr" data-id="cvs_prev_exam2022_q116"><li class="opt" data-letter="A">A. Flow velocity exceeds a certain value.</li>
+<li class="opt" data-letter="B">B. Blood 
+viscosity exceeds a certain value.</li>
+<li class="opt" data-letter="C">C. Blood vessel diameter exceeds a 
+certain value.</li>
+<li class="opt is-correct" data-letter="D">D. The Reynolds number exceeds a certain value.</li>
+<li class="opt" data-letter="E">E. The 
+blood pressure slows down.</li>
+</ul>
+  <div class="answer-block" data-id="cvs_prev_exam2022_q116">
+    <div class="answer-reveal">&#9989; Correct: D &mdash; The Reynolds number exceeds a certain value.</div>
+    <div class="exp-label">الشرح</div>
+    <div class="explanation-ar" dir="rtl" lang="ar"><p>الـ Blood flow بيتحول لـ Turbulent بشكل مباشر لما الـ  Reynolds number يتخطى قيمة حاسمة معينة (Critical value) وعشان كده D هي الإجابة  الصح.</p><h4 class="exp-h">ليه الباقي غلط؟🤔</h4><p>A. Flow velocity exceeds a certain value C. Blood vessel diameter exceeds a  certain value دول مجرد عوامل فردية بتدخل في الحسابات، بس الشرط الشامل لتحدد الـ Turbulence هو  الـ Reynolds number نفسه وبالتالي مش أصح اختيار<br>B. Blood viscosity exceeds a certain value زيادة الـ Viscosity بتقلل الـ  Reynolds number وبالتالي بتقلل الـ Turbulence مش بتزودها<br>E. The blood pressure slows down التغير ده ملوش علاقة مباشرة بتوليد الـ  Turbulence فبالتالي متنفعش معانا</p></div>
+  </div>
+  <button class="show-exp-btn" onclick="showExplanation(this)" data-id="cvs_prev_exam2022_q116">&#128161; Show Explanation</button>
+  <button class="gpt-btn" onclick="askGPT(this)">&#128172; Ask GPT</button>
+</div>
+<div class="qcard" data-id="cvs_prev_exam2022_q117" data-type="mcq" data-correct="C" data-idx="29" data-subject="physio">
+<canvas class="qcard-canvas" data-qid="cvs_prev_exam2022_q117"></canvas>
+<div class="sticky-note" data-qid="cvs_prev_exam2022_q117">
+  <div class="sticky-note-header"><button class="note-close-btn" onclick="closeNote(this)">&#215;</button></div>
+  <canvas class="sticky-canvas" data-qid="cvs_prev_exam2022_q117" tabindex="0"></canvas>
+</div>
+  <div class="qcard-header">
+    <span class="q-num">Q29</span>
+    <div class="qcard-badges"></div>
+    <button class="star-btn" data-id="cvs_prev_exam2022_q117" onclick="toggleStar(this)" title="Star this question">☆</button>
+    <button class="sticky-note-btn" data-qid="cvs_prev_exam2022_q117" onclick="toggleNote(this)" title="Sticky note">&#128221;</button>
+  </div>
+  
+  <p class="q-text" dir="ltr">Mean arterial pressure equals:</p>
+  <ul class="opts" dir="ltr" data-id="cvs_prev_exam2022_q117"><li class="opt" data-letter="A">A. Arterial compliance times stroke volume.</li>
+<li class="opt" data-letter="B">B. Heart rate 
+times stroke volume.</li>
+<li class="opt is-correct" data-letter="C">C. Cardiac output times systemic vascular 
+resistance.</li>
+<li class="opt" data-letter="D">D. Cardiac output times arterial compliance.</li>
+<li class="opt" data-letter="E">E. Stroke 
+volume times arterial compliance.</li>
+</ul>
+  <div class="answer-block" data-id="cvs_prev_exam2022_q117">
+    <div class="answer-reveal">&#9989; Correct: C &mdash; Cardiac output times systemic vascular 
+resistance.</div>
+    <div class="exp-label">الشرح</div>
+    <div class="explanation-ar" dir="rtl" lang="ar"><p>حسب القانون الفيزيولوجي MAP = Cardiac output × Systemic  vascular resistance فالـ Mean arterial pressure بيساوي ضرب الـ Cardiac output في الـ Systemic vascular resistance وبالتالي C هي الصح.</p><h4 class="exp-h">ليه الباقي غلط؟🤔</h4><p>A. Arterial compliance times stroke volume D. Cardiac output times arterial  compliance E. Stroke volume times arterial compliance دول معادلات مش مظبوطة ولا تعبر عن الـ Mean arterial pressure فبالتالي مش هيفرقوا معانا ومتنفعش<br>B. Heart rate times stroke volume ده القانون اللي بيحسب الـ Cardiac output مش  الـ MAP وبالتالي مش صح</p></div>
+  </div>
+  <button class="show-exp-btn" onclick="showExplanation(this)" data-id="cvs_prev_exam2022_q117">&#128161; Show Explanation</button>
+  <button class="gpt-btn" onclick="askGPT(this)">&#128172; Ask GPT</button>
+</div>
+<div class="qcard" data-id="cvs_prev_exam2022_q118" data-type="mcq" data-correct="A" data-idx="30" data-subject="physio">
+<canvas class="qcard-canvas" data-qid="cvs_prev_exam2022_q118"></canvas>
+<div class="sticky-note" data-qid="cvs_prev_exam2022_q118">
+  <div class="sticky-note-header"><button class="note-close-btn" onclick="closeNote(this)">&#215;</button></div>
+  <canvas class="sticky-canvas" data-qid="cvs_prev_exam2022_q118" tabindex="0"></canvas>
+</div>
+  <div class="qcard-header">
+    <span class="q-num">Q30</span>
+    <div class="qcard-badges"></div>
+    <button class="star-btn" data-id="cvs_prev_exam2022_q118" onclick="toggleStar(this)" title="Star this question">☆</button>
+    <button class="sticky-note-btn" data-qid="cvs_prev_exam2022_q118" onclick="toggleNote(this)" title="Sticky note">&#128221;</button>
+  </div>
+  
+  <p class="q-text" dir="ltr">The major pressures 
+that determine filtration and absorption of fluid by capillaries are the:</p>
+  <ul class="opts" dir="ltr" data-id="cvs_prev_exam2022_q118"><li class="opt is-correct" data-letter="A">A. Capillary hydrostatic pressure and plasma colloid osmotic 
+pressure.</li>
+<li class="opt" data-letter="B">B. Plasma colloid osmotic pressure and interstitial hydrostatic 
+pressure.</li>
+<li class="opt" data-letter="C">C. Interstitial hydrostatic pressure and tissue colloid osmotic 
+pressure.</li>
+<li class="opt" data-letter="D">D. Capillary hydrostatic pressure and tissue colloid osmotic 
+pressure.</li>
+<li class="opt" data-letter="E">E. Plasma colloid osmotic pressure and tissue colloid osmotic 
+pressure.</li>
+</ul>
+  <div class="answer-block" data-id="cvs_prev_exam2022_q118">
+    <div class="answer-reveal">&#9989; Correct: A &mdash; Capillary hydrostatic pressure and plasma colloid osmotic 
+pressure.</div>
+    <div class="exp-label">الشرح</div>
+    <div class="explanation-ar" dir="rtl" lang="ar"><p>القوى الأساسية اللي بتحدد الـ Filtration والـ Absorption عبر الـ Capillaries هي الـ Capillary hydrostatic pressure والـ Plasma colloid  osmotic pressure لأن دول أكبر قوتين من حيث القيمة والتأثير المباشر وبالتالي A هي الصح.</p><h4 class="exp-h">ليه الباقي غلط؟🤔</h4><p>B. Plasma colloid osmotic pressure and interstitial hydrostatic pressure C.  Interstitial hydrostatic pressure and tissue colloid osmotic pressure D.  Capillary hydrostatic pressure and tissue colloid osmotic pressure E. Plasma  colloid osmotic pressure and tissue colloid osmotic pressure دول بيشملوا الـ Interstitial pressures ودي قيمها صغيرة جداً مقارنة بالقوتين  الرئيسيتين وبالتالي مش هينفعوا معانا</p></div>
+  </div>
+  <button class="show-exp-btn" onclick="showExplanation(this)" data-id="cvs_prev_exam2022_q118">&#128161; Show Explanation</button>
+  <button class="gpt-btn" onclick="askGPT(this)">&#128172; Ask GPT</button>
+</div>
+<div class="qcard" data-id="cvs_prev_exam2022_q119" data-type="mcq" data-correct="A" data-idx="31" data-subject="physio">
+<canvas class="qcard-canvas" data-qid="cvs_prev_exam2022_q119"></canvas>
+<div class="sticky-note" data-qid="cvs_prev_exam2022_q119">
+  <div class="sticky-note-header"><button class="note-close-btn" onclick="closeNote(this)">&#215;</button></div>
+  <canvas class="sticky-canvas" data-qid="cvs_prev_exam2022_q119" tabindex="0"></canvas>
+</div>
+  <div class="qcard-header">
+    <span class="q-num">Q31</span>
+    <div class="qcard-badges"></div>
+    <button class="star-btn" data-id="cvs_prev_exam2022_q119" onclick="toggleStar(this)" title="Star this question">☆</button>
+    <button class="sticky-note-btn" data-qid="cvs_prev_exam2022_q119" onclick="toggleNote(this)" title="Sticky note">&#128221;</button>
+  </div>
+  
+  <p class="q-text" dir="ltr">The first step for lymphatic vessels to remove 
+excess fluid from interstitial tissue space is by:</p>
+  <ul class="opts" dir="ltr" data-id="cvs_prev_exam2022_q119"><li class="opt is-correct" data-letter="A">A. Generating a lower intravascular than tissue hydrostatic pressure.</li>
+<li class="opt" data-letter="B">B. Contracting and forcing lymph into larger lymphatics.</li>
+<li class="opt" data-letter="C">C. Opening and 
+closing one-way valve in the lymph vessels.</li>
+<li class="opt" data-letter="D">D. Lowering the colloid osmotic
+pressure inside the lymph vessels.</li>
+<li class="opt" data-letter="E">E. Closing the opening between adjacent 
+lymphatic endothelial cells.</li>
+</ul>
+  <div class="answer-block" data-id="cvs_prev_exam2022_q119">
+    <div class="answer-reveal">&#9989; Correct: A &mdash; Generating a lower intravascular than tissue hydrostatic pressure.</div>
+    <div class="exp-label">الشرح</div>
+    <div class="explanation-ar" dir="rtl" lang="ar"><p>دخول السوائل الزائدة للـ Lymphatic vessels كأول خطوة بيعتمد  على إن الضغط جوة الأوعية اللمفاوية يكون أقل من الـ Interstitial tissue  hydrostatic pressure عشان السائل يتسحب مع الـ Pressure gradient وبالتالي A هي  الصح.</p><h4 class="exp-h">ليه الباقي غلط؟🤔</h4><p>B. Contracting and forcing lymph into larger lymphatics C. Opening and closing  one-way valve in the lymph vessels دول خطوات متأخرة لنقل اللمف جوة الأوعية مش الخطوة الأولى لسحب السائل فبالتالي مش صح<br>D. Lowering the colloid osmotic pressure inside the lymph vessels E. Closing  the opening between adjacent lymphatic endothelial cells دول مش آليات سحب السائل وقفل الفتحات هيمنع دخوله اصلاً فبالتالي متنفعش معانا</p></div>
+  </div>
+  <button class="show-exp-btn" onclick="showExplanation(this)" data-id="cvs_prev_exam2022_q119">&#128161; Show Explanation</button>
+  <button class="gpt-btn" onclick="askGPT(this)">&#128172; Ask GPT</button>
+</div>
+<div class="qcard" data-id="cvs_prev_exam2022_q120" data-type="mcq" data-correct="A" data-idx="32" data-subject="physio">
+<canvas class="qcard-canvas" data-qid="cvs_prev_exam2022_q120"></canvas>
+<div class="sticky-note" data-qid="cvs_prev_exam2022_q120">
+  <div class="sticky-note-header"><button class="note-close-btn" onclick="closeNote(this)">&#215;</button></div>
+  <canvas class="sticky-canvas" data-qid="cvs_prev_exam2022_q120" tabindex="0"></canvas>
+</div>
+  <div class="qcard-header">
+    <span class="q-num">Q32</span>
+    <div class="qcard-badges"></div>
+    <button class="star-btn" data-id="cvs_prev_exam2022_q120" onclick="toggleStar(this)" title="Star this question">☆</button>
+    <button class="sticky-note-btn" data-qid="cvs_prev_exam2022_q120" onclick="toggleNote(this)" title="Sticky note">&#128221;</button>
+  </div>
+  
+  <p class="q-text" dir="ltr">Which of the following would be 
+an expected response by the coronary vasculature?</p>
+  <ul class="opts" dir="ltr" data-id="cvs_prev_exam2022_q120"><li class="opt is-correct" data-letter="A">A. Increased 
+blood flow when the heart work load is increased.</li>
+<li class="opt" data-letter="B">B. Increased vascular 
+resistance when the arterial blood pressure is increased.</li>
+<li class="opt" data-letter="C">C. Decreased 
+blood flow when mean arterial pressure is reduced from 90 to 60 mm Hg by 
+hemorrhage.</li>
+<li class="opt" data-letter="D">D. Decreased blood flow when blood oxygen content is reduced.</li>
+<li class="opt" data-letter="E">E. Increased vascular resistance during aerobic exercise.</li>
+</ul>
+  <div class="answer-block" data-id="cvs_prev_exam2022_q120">
+    <div class="answer-reveal">&#9989; Correct: A &mdash; Increased 
+blood flow when the heart work load is increased.</div>
+    <div class="exp-label">الشرح</div>
+    <div class="explanation-ar" dir="rtl" lang="ar"><p>الـ Coronary circulation بتتأثر بشكل أساسي بـ Metabolic  autoregulation يعني كل ما بيزيد الـ Heart work load بيزيد الـ Coronary blood  flow عشان يغطي احتياج الأكسجين وبالتالي A هي الإجابة الصح.</p><h4 class="exp-h">ليه الباقي غلط؟🤔</h4><p>B. Increased vascular resistance when arterial BP is increased الـ  Autoregulation بتحافظ على الـ Flow ثابت بالـ Resistance بس الاستجابة الأساسية  للمجهود بتكون Metabolic وبالتالي متنفعش<br>C. Decreased blood flow when MAP is reduced from 90 to 60 mm Hg الـ  Autoregulation بتحافظ على الـ Flow ثابت في المدى ده فبالتالي مش صح<br>D. Decreased blood flow when blood O2 content is reduced نقص الأكسجين بيعمل  Vasodilation ويزود الـ Flow مش يقلله وبالتالي متنفعش معانا<br>E. Increased vascular resistance during aerobic exercise أثناء التمارين بيحصل  Vasodilation وتقل الـ Resistance مش تزيد فبالتالي مش صح</p></div>
+  </div>
+  <button class="show-exp-btn" onclick="showExplanation(this)" data-id="cvs_prev_exam2022_q120">&#128161; Show Explanation</button>
+  <button class="gpt-btn" onclick="askGPT(this)">&#128172; Ask GPT</button>
+</div>
+<div class="qcard" data-id="cvs_prev_exam2022_q121" data-type="mcq" data-correct="D" data-idx="33" data-subject="physio">
+<canvas class="qcard-canvas" data-qid="cvs_prev_exam2022_q121"></canvas>
+<div class="sticky-note" data-qid="cvs_prev_exam2022_q121">
+  <div class="sticky-note-header"><button class="note-close-btn" onclick="closeNote(this)">&#215;</button></div>
+  <canvas class="sticky-canvas" data-qid="cvs_prev_exam2022_q121" tabindex="0"></canvas>
+</div>
+  <div class="qcard-header">
+    <span class="q-num">Q33</span>
+    <div class="qcard-badges"></div>
+    <button class="star-btn" data-id="cvs_prev_exam2022_q121" onclick="toggleStar(this)" title="Star this question">☆</button>
+    <button class="sticky-note-btn" data-qid="cvs_prev_exam2022_q121" onclick="toggleNote(this)" title="Sticky note">&#128221;</button>
+  </div>
+  
+  <p class="q-text" dir="ltr">The 
+cold pressor response is initiated by stimulation of:</p>
+  <ul class="opts" dir="ltr" data-id="cvs_prev_exam2022_q121"><li class="opt" data-letter="A">A. Baroreceptors.</li>
+<li class="opt" data-letter="B">B. Cardiopulmonary receptors.</li>
+<li class="opt" data-letter="C">C. Hypothalamic 
+receptors.</li>
+<li class="opt is-correct" data-letter="D">D. Pain receptors.</li>
+<li class="opt" data-letter="E">E. Chemoreceptors.</li>
+</ul>
+  <div class="answer-block" data-id="cvs_prev_exam2022_q121">
+    <div class="answer-reveal">&#9989; Correct: D &mdash; Pain receptors.</div>
+    <div class="exp-label">الشرح</div>
+    <div class="explanation-ar" dir="rtl" lang="ar"><p>الـ Cold pressor response بيبدأ بـ Stimulation للـ Pain and  Thermal receptors في الـ Skin نتيجة البرودة المؤلمة وبالتالي الإجابة الصح D -  Pain receptors.</p><h4 class="exp-h">ليه الباقي غلط؟🤔</h4><p>A. Baroreceptors بتتأثر بالتغيرات في الـ Blood pressure مش بالـ Cold and Pain  وبالتالي متنفعش<br>B. Cardiopulmonary receptors بتحس بالـ Blood volume والـ Stretch جوة القلب  وبالتالي مش صح<br>C. Hypothalamic receptors دي بتستجيب لدرجة حرارة الدم الداخلية مش للـ External  cold stimulus وبالتالي متنفعش معانا<br>E. Chemoreceptors بتستجيب لتغيرات الـ O2 والـ CO2 والـ pH في الدم وبالتالي مش هي السبب</p></div>
+  </div>
+  <button class="show-exp-btn" onclick="showExplanation(this)" data-id="cvs_prev_exam2022_q121">&#128161; Show Explanation</button>
+  <button class="gpt-btn" onclick="askGPT(this)">&#128172; Ask GPT</button>
+</div>
+<div class="qcard" data-id="cvs_prev_exam2022_q122" data-type="mcq" data-correct="D" data-idx="34" data-subject="physio">
+<canvas class="qcard-canvas" data-qid="cvs_prev_exam2022_q122"></canvas>
+<div class="sticky-note" data-qid="cvs_prev_exam2022_q122">
+  <div class="sticky-note-header"><button class="note-close-btn" onclick="closeNote(this)">&#215;</button></div>
+  <canvas class="sticky-canvas" data-qid="cvs_prev_exam2022_q122" tabindex="0"></canvas>
+</div>
+  <div class="qcard-header">
+    <span class="q-num">Q34</span>
+    <div class="qcard-badges"></div>
+    <button class="star-btn" data-id="cvs_prev_exam2022_q122" onclick="toggleStar(this)" title="Star this question">☆</button>
+    <button class="sticky-note-btn" data-qid="cvs_prev_exam2022_q122" onclick="toggleNote(this)" title="Sticky note">&#128221;</button>
+  </div>
+  
+  <p class="q-text" dir="ltr">Which of the following is true with respect to peripheral chemoreceptors?</p>
+  <ul class="opts" dir="ltr" data-id="cvs_prev_exam2022_q122"><li class="opt" data-letter="A">A. Activation is important in inhibiting the diving response.</li>
+<li class="opt" data-letter="B">B. Activity is increased by increased pH.</li>
+<li class="opt" data-letter="C">C. They are located in the 
+medulla oblongata, but not the hypothalamus.</li>
+<li class="opt is-correct" data-letter="D">D. Activation is important in 
+the cardiovascular response to hemorrhage hypotension.</li>
+<li class="opt" data-letter="E">E. Activity is 
+increased by lowering of the oxygen content, but not the PO2, of arterial 
+blood.</li>
+</ul>
+  <div class="answer-block" data-id="cvs_prev_exam2022_q122">
+    <div class="answer-reveal">&#9989; Correct: D &mdash; Activation is important in 
+the cardiovascular response to hemorrhage hypotension.</div>
+    <div class="exp-label">الشرح</div>
+    <div class="explanation-ar" dir="rtl" lang="ar"><p>الـ Peripheral chemoreceptors بتتنشط بشكل ملحوظ لما الضغط  يقع جامد زي حالات الـ Hemorrhage hypotension عشان تساعد في زيادة الـ Sympathetic response وتحافظ على الدورة الدموية وبالتالي D هي الإجابة الصح.</p><h4 class="exp-h">ليه الباقي غلط؟🤔</h4><p>A. Activation is important in inhibiting the diving response تحفيزها بيفعل الـ  Diving response مش بيثبطه فبالتالي متنفعش معانا<br>B. Activity is increased by increased pH نشاطها بيزيد مع نقص الـ pH اللي هو الـ  Acidosis مش زيادته وبالتالي مش صح<br>C. They are located in the medulla oblongata أماكن وجودها في الـ Carotid and  aortic bodies مش في الـ Medulla فبالتالي متنفعش<br>E. Activity is increased by lowering of the oxygen content, but not the PO2  نشاطها بيعتمد على انخفاض الـ PO2 مش الـ Total O2 content فبالتالي مش مظبوطة</p></div>
+  </div>
+  <button class="show-exp-btn" onclick="showExplanation(this)" data-id="cvs_prev_exam2022_q122">&#128161; Show Explanation</button>
+  <button class="gpt-btn" onclick="askGPT(this)">&#128172; Ask GPT</button>
+</div>
+<div class="qcard" data-id="cvs_prev_exam2022_q123" data-type="mcq" data-correct="B" data-idx="35" data-subject="physio">
+<canvas class="qcard-canvas" data-qid="cvs_prev_exam2022_q123"></canvas>
+<div class="sticky-note" data-qid="cvs_prev_exam2022_q123">
+  <div class="sticky-note-header"><button class="note-close-btn" onclick="closeNote(this)">&#215;</button></div>
+  <canvas class="sticky-canvas" data-qid="cvs_prev_exam2022_q123" tabindex="0"></canvas>
+</div>
+  <div class="qcard-header">
+    <span class="q-num">Q35</span>
+    <div class="qcard-badges"></div>
+    <button class="star-btn" data-id="cvs_prev_exam2022_q123" onclick="toggleStar(this)" title="Star this question">☆</button>
+    <button class="sticky-note-btn" data-qid="cvs_prev_exam2022_q123" onclick="toggleNote(this)" title="Sticky note">&#128221;</button>
+  </div>
+  
+  <p class="q-text" dir="ltr">Parasympathetic stimulation of the heart 
+accompanied by a withdrawal of sympathetic tone to most of the blood vessels of 
+the body is characteristic of:</p>
+  <ul class="opts" dir="ltr" data-id="cvs_prev_exam2022_q123"><li class="opt" data-letter="A">A. The light-or-flight 
+response.</li>
+<li class="opt is-correct" data-letter="B">B. Vasovagal syncope.</li>
+<li class="opt" data-letter="C">C. Exercise.</li>
+<li class="opt" data-letter="D">D. The diving 
+response.</li>
+<li class="opt" data-letter="E">E. The cold pressor response.</li>
+</ul>
+  <div class="answer-block" data-id="cvs_prev_exam2022_q123">
+    <div class="answer-reveal">&#9989; Correct: B &mdash; Vasovagal syncope.</div>
+    <div class="exp-label">الشرح</div>
+    <div class="explanation-ar" dir="rtl" lang="ar"><p>زيادة الـ Parasympathetic stimulation للقلب مع انسحاب الـ  Sympathetic tone من أوعية الجسم بتسبب Bradycardia وVasodilation شديد وده المميز  لـ Vasovagal syncope وبالتالي B هي الصح.</p><h4 class="exp-h">ليه الباقي غلط؟🤔</h4><p>A. The light-or-flight response C. Exercise E. The cold pressor response دول كلهم بيتميزوا بزيادة الـ Sympathetic tone مش انسحابها فبالتالي مش هينفعوا  معانا<br>D. The diving response بيحصل فيه Parasympathetic للقلب مع Sympathetic  vasoconstriction مش انسحاب للـ Sympathetic tone وبالتالي متنفعش</p></div>
+  </div>
+  <button class="show-exp-btn" onclick="showExplanation(this)" data-id="cvs_prev_exam2022_q123">&#128161; Show Explanation</button>
+  <button class="gpt-btn" onclick="askGPT(this)">&#128172; Ask GPT</button>
+</div>
+<div class="qcard" data-id="cvs_prev_exam2022_q124" data-type="mcq" data-correct="D" data-idx="36" data-subject="physio">
+<canvas class="qcard-canvas" data-qid="cvs_prev_exam2022_q124"></canvas>
+<div class="sticky-note" data-qid="cvs_prev_exam2022_q124">
+  <div class="sticky-note-header"><button class="note-close-btn" onclick="closeNote(this)">&#215;</button></div>
+  <canvas class="sticky-canvas" data-qid="cvs_prev_exam2022_q124" tabindex="0"></canvas>
+</div>
+  <div class="qcard-header">
+    <span class="q-num">Q36</span>
+    <div class="qcard-badges"></div>
+    <button class="star-btn" data-id="cvs_prev_exam2022_q124" onclick="toggleStar(this)" title="Star this question">☆</button>
+    <button class="sticky-note-btn" data-qid="cvs_prev_exam2022_q124" onclick="toggleNote(this)" title="Sticky note">&#128221;</button>
+  </div>
+  
+  <p class="q-text" dir="ltr">A patient suffers a 
+severe hemorrhage resulting in a lowered mean arterial pressure. Which of the 
+following would be elevated above normal levels?</p>
+  <ul class="opts" dir="ltr" data-id="cvs_prev_exam2022_q124"><li class="opt" data-letter="A">A. Splanchnic 
+blood flow.</li>
+<li class="opt" data-letter="B">B. Cardiopulmonary receptor activity.</li>
+<li class="opt" data-letter="C">C. Right ventricular
+EDV</li>
+<li class="opt is-correct" data-letter="D">D. Heart rate.</li>
+<li class="opt" data-letter="E">E. Carotid baroreceptors activity.</li>
+</ul>
+  <div class="answer-block" data-id="cvs_prev_exam2022_q124">
+    <div class="answer-reveal">&#9989; Correct: D &mdash; Heart rate.</div>
+    <div class="exp-label">الشرح</div>
+    <div class="explanation-ar" dir="rtl" lang="ar"><p>الـ Severe hemorrhage بيقلل الـ Mean arterial pressure وده  بيقلل تحفيز الـ Baroreceptors فيحصل Reflex زيادة في الـ Sympathetic output ويزود الـ Heart rate عشان يعوض انخفاض الضغط وبالتالي D هي الصح.</p><h4 class="exp-h">ليه الباقي غلط؟🤔</h4><p>A. Splanchnic blood flow بيقل نتيجة الـ Sympathetic vasoconstriction الشديد  فبالتالي متنفعش<br>B. Cardiopulmonary receptor activity C. Right ventricular EDV دول بيقلوا نتيجة نقص الـ Venous return وحجم الدم المرتجع للقلب وبالتالي مش صح<br>E. Carotid baroreceptors activity بيقل نشاطها مع انخفاض الضغط مش بيزيد فبالتالي  متنفعش معانا</p></div>
+  </div>
+  <button class="show-exp-btn" onclick="showExplanation(this)" data-id="cvs_prev_exam2022_q124">&#128161; Show Explanation</button>
+  <button class="gpt-btn" onclick="askGPT(this)">&#128172; Ask GPT</button>
+</div>
+<div class="qcard" data-id="cvs_prev_exam2022_q125" data-type="mcq" data-correct="C" data-idx="37" data-subject="physio">
+<canvas class="qcard-canvas" data-qid="cvs_prev_exam2022_q125"></canvas>
+<div class="sticky-note" data-qid="cvs_prev_exam2022_q125">
+  <div class="sticky-note-header"><button class="note-close-btn" onclick="closeNote(this)">&#215;</button></div>
+  <canvas class="sticky-canvas" data-qid="cvs_prev_exam2022_q125" tabindex="0"></canvas>
+</div>
+  <div class="qcard-header">
+    <span class="q-num">Q37</span>
+    <div class="qcard-badges"></div>
+    <button class="star-btn" data-id="cvs_prev_exam2022_q125" onclick="toggleStar(this)" title="Star this question">☆</button>
+    <button class="sticky-note-btn" data-qid="cvs_prev_exam2022_q125" onclick="toggleNote(this)" title="Sticky note">&#128221;</button>
+  </div>
+  
+  <p class="q-text" dir="ltr">The most vulnerable layer to develop ischemia and myocardial infarction is:</p>
+  <ul class="opts" dir="ltr" data-id="cvs_prev_exam2022_q125"><li class="opt" data-letter="A">A. The pericardium.</li>
+<li class="opt" data-letter="B">B. The subepicardium layer.</li>
+<li class="opt is-correct" data-letter="C">C. The 
+subendocarium layer.</li>
+<li class="opt" data-letter="D">D. The middle layer.</li>
+<li class="opt" data-letter="E">E. The endocardium.</li>
+</ul>
+  <div class="answer-block" data-id="cvs_prev_exam2022_q125">
+    <div class="answer-reveal">&#9989; Correct: C &mdash; The 
+subendocarium layer.</div>
+    <div class="exp-label">الشرح</div>
+    <div class="explanation-ar" dir="rtl" lang="ar"><p>طبقة الـ Subendocarium layer هي الأكثر عرضة للـ Ischemia  والـ Myocardial infarction لأن الأوعية الدموية بتمر من برة لجوة وبيحصل عليها  أعلى ضغط أثناء الـ Systole وبالتالي C هي الصح.</p><h4 class="exp-h">ليه الباقي غلط؟🤔</h4><p>A. The pericardium ده الغشاء الخارجي للقلب ومش هو العضلة المعرضة للـ Infarction  فبالتالي متنفعش<br>B. The subepicardium layer دي طبقة سطحية قريبة من الـ Coronary arteries وضغط  الانقباض عليها أقل وبالتالي متنفعش معانا<br>D. The middle layer دي الطبقة الوسطى وحمايتها أفضل نسبيًا من الطبقة الداخلية  فبالتالي مش صح<br>E. The endocardium دي البطانة الداخلية للقلب وبتأخد أكسجين مباشر من الدم جوة  الحجرات فبالتالي مش صح</p></div>
+  </div>
+  <button class="show-exp-btn" onclick="showExplanation(this)" data-id="cvs_prev_exam2022_q125">&#128161; Show Explanation</button>
+  <button class="gpt-btn" onclick="askGPT(this)">&#128172; Ask GPT</button>
+</div>
+<div class="qcard" data-id="cvs_prev_exam2022_q126" data-type="mcq" data-correct="B" data-idx="38" data-subject="physio">
+<canvas class="qcard-canvas" data-qid="cvs_prev_exam2022_q126"></canvas>
+<div class="sticky-note" data-qid="cvs_prev_exam2022_q126">
+  <div class="sticky-note-header"><button class="note-close-btn" onclick="closeNote(this)">&#215;</button></div>
+  <canvas class="sticky-canvas" data-qid="cvs_prev_exam2022_q126" tabindex="0"></canvas>
+</div>
+  <div class="qcard-header">
+    <span class="q-num">Q38</span>
+    <div class="qcard-badges"></div>
+    <button class="star-btn" data-id="cvs_prev_exam2022_q126" onclick="toggleStar(this)" title="Star this question">☆</button>
+    <button class="sticky-note-btn" data-qid="cvs_prev_exam2022_q126" onclick="toggleNote(this)" title="Sticky note">&#128221;</button>
+  </div>
+  
+  <p class="q-text" dir="ltr">If a person has an arterial blood pressure of 125/75 mm 
+Hg:</p>
+  <ul class="opts" dir="ltr" data-id="cvs_prev_exam2022_q126"><li class="opt" data-letter="A">A. The pulse pressure is 40 mm Hg.</li>
+<li class="opt is-correct" data-letter="B">B. The mean 
+arterial pressure is 92 mm Hg</li>
+<li class="opt" data-letter="C">C. Diastolic pressure is 80 mm Hg</li>
+<li class="opt" data-letter="D">D. Systolic pressure is 120 mm Hg.</li>
+<li class="opt" data-letter="E">E. The mean arterial pressure is 100 mm 
+Hg.</li>
+</ul>
+  <div class="answer-block" data-id="cvs_prev_exam2022_q126">
+    <div class="answer-reveal">&#9989; Correct: B &mdash; The mean 
+arterial pressure is 92 mm Hg</div>
+    <div class="exp-label">الشرح</div>
+    <div class="explanation-ar" dir="rtl" lang="ar"><p>لما نحسب الـ Mean arterial pressure بقانون Diastolic +  (Pulse pressure / 3) هيطلع 75 + (50 / 3) = 91.67 يعني تقريباً 92 mm Hg وبالتالي B هي الإجابة الصح.</p><h4 class="exp-h">ليه الباقي غلط؟🤔</h4><p>A. Pulse pressure بيساوي 125 - 75 = 50 mm Hg مش 40 فبالتالي متنفعش<br>C. Diastolic pressure بيساوي 75 mm Hg مش 80 وبالتالي مش صح<br>D. Systolic pressure بيساوي 125 mm Hg مش 120 فبالتالي مش معانا<br>E. Mean arterial pressure طالع 92 mm Hg مش 100 فبالتالي متنفعش</p></div>
+  </div>
+  <button class="show-exp-btn" onclick="showExplanation(this)" data-id="cvs_prev_exam2022_q126">&#128161; Show Explanation</button>
+  <button class="gpt-btn" onclick="askGPT(this)">&#128172; Ask GPT</button>
+</div>
+<div class="qcard" data-id="cvs_prev_exam2022_q127" data-type="mcq" data-correct="D" data-idx="39" data-subject="physio">
+<canvas class="qcard-canvas" data-qid="cvs_prev_exam2022_q127"></canvas>
+<div class="sticky-note" data-qid="cvs_prev_exam2022_q127">
+  <div class="sticky-note-header"><button class="note-close-btn" onclick="closeNote(this)">&#215;</button></div>
+  <canvas class="sticky-canvas" data-qid="cvs_prev_exam2022_q127" tabindex="0"></canvas>
+</div>
+  <div class="qcard-header">
+    <span class="q-num">Q39</span>
+    <div class="qcard-badges"></div>
+    <button class="star-btn" data-id="cvs_prev_exam2022_q127" onclick="toggleStar(this)" title="Star this question">☆</button>
+    <button class="sticky-note-btn" data-qid="cvs_prev_exam2022_q127" onclick="toggleNote(this)" title="Sticky note">&#128221;</button>
+  </div>
+  
+  <p class="q-text" dir="ltr">Concerning the hydrostatic indifferent point 
+(HIP):</p>
+  <ul class="opts" dir="ltr" data-id="cvs_prev_exam2022_q127"><li class="opt" data-letter="A">A. It is normally located at 7 inches below the level of
+the diaphragm.</li>
+<li class="opt" data-letter="B">B. It is normally located at the level of the heart.</li>
+<li class="opt" data-letter="C">C. Its position is not changed by water immersion.</li>
+<li class="opt is-correct" data-letter="D">D. At it, the 
+intravascular pressure remains constant at various positions.</li>
+<li class="opt" data-letter="E">E. It is 
+about 13 mmHg.</li>
+</ul>
+  <div class="answer-block" data-id="cvs_prev_exam2022_q127">
+    <div class="answer-reveal">&#9989; Correct: D &mdash; At it, the 
+intravascular pressure remains constant at various positions.</div>
+    <div class="exp-label">الشرح</div>
+    <div class="explanation-ar" dir="rtl" lang="ar"><p>الـ Hydrostatic indifferent point (HIP) هي النقطة في الـ  Vascular system اللي عندها الـ Intravascular pressure بيفضل ثابت ومبيتغيرش مع  تغير وضعية الجسم (Various positions) وبناء عليه D هي الصح.</p><h4 class="exp-h">ليه الباقي غلط؟🤔</h4><p>A. It is normally located at 7 inches below the level of the diaphragm هي مكانها تقريباً عند أو تحت الـ Diaphragm بـ 5 cm (حوالي 2 inches) مش 7 inches وبالتالي مش صح<br>B. It is normally located at the level of the heart مكانها مش عند مستوى القلب  فبالتالي متنفعش<br>C. Its position is not changed by water immersion وضعها بيتغير مع الـ Water  immersion والـ G-forces وبالتالي مش صح<br>E. It is about 13 mmHg قيمتها مش ثابتة برقم 13 mmHg فبالتالي متنفعش معانا</p></div>
+  </div>
+  <button class="show-exp-btn" onclick="showExplanation(this)" data-id="cvs_prev_exam2022_q127">&#128161; Show Explanation</button>
+  <button class="gpt-btn" onclick="askGPT(this)">&#128172; Ask GPT</button>
+</div>
+</section></main>
+
+<script>
+// ── State ────────────────────────────────────────────────────────────────────
+const FILE_ID = "cvs_prev_exam2022_physio_01";
+const STORAGE_KEY = "exam_os_v1_" + FILE_ID;
+const SHARED_KEY   = "exam_os_settings_v1";   // shared across ALL files
+const SETTINGS_KEYS = ["theme","fontSize","contentWidth","fontFamily","expColor"];
+const SECTIONS = [{"slug": "cvs_end_semester_20212022_pdf", "title": "CVS end semester 20212022.pdf", "question_ids": ["cvs_prev_exam2022_q002", "cvs_prev_exam2022_q090", "cvs_prev_exam2022_q091", "cvs_prev_exam2022_q092", "cvs_prev_exam2022_q093", "cvs_prev_exam2022_q094", "cvs_prev_exam2022_q095", "cvs_prev_exam2022_q096", "cvs_prev_exam2022_q097", "cvs_prev_exam2022_q098", "cvs_prev_exam2022_q099", "cvs_prev_exam2022_q100", "cvs_prev_exam2022_q101", "cvs_prev_exam2022_q102", "cvs_prev_exam2022_q103", "cvs_prev_exam2022_q104", "cvs_prev_exam2022_q105", "cvs_prev_exam2022_q106", "cvs_prev_exam2022_q107", "cvs_prev_exam2022_q108", "cvs_prev_exam2022_q109", "cvs_prev_exam2022_q110", "cvs_prev_exam2022_q111", "cvs_prev_exam2022_q112", "cvs_prev_exam2022_q113", "cvs_prev_exam2022_q114", "cvs_prev_exam2022_q115", "cvs_prev_exam2022_q116", "cvs_prev_exam2022_q117", "cvs_prev_exam2022_q118", "cvs_prev_exam2022_q119", "cvs_prev_exam2022_q120", "cvs_prev_exam2022_q121", "cvs_prev_exam2022_q122", "cvs_prev_exam2022_q123", "cvs_prev_exam2022_q124", "cvs_prev_exam2022_q125", "cvs_prev_exam2022_q126", "cvs_prev_exam2022_q127"]}];
+
+const DEFAULT_STATE = {
+  version: 1,
+  mode: "study",
+  theme: "dark",
+  showExplanations: true,
+  filter: "all",
+  answers: {},
+  starred: [],
+  fontSize: "m",
+  contentWidth: 880,
+  fontFamily: "amiri",
+  expColor: "default",
+};
+
+const FONT_MAP = {
+  amiri:   "'Amiri','Noto Naskh Arabic',Georgia,serif",
+  noto:    "'Noto Naskh Arabic','Segoe UI',Tahoma,serif",
+  cairo:   "'Cairo',sans-serif",
+  tajawal: "'Tajawal',sans-serif",
+  system:  "'Segoe UI',Tahoma,Arial,sans-serif",
+};
+const EXP_COLOR_MAP = {
+  default: "",               // use theme CSS default
+  warm:    "#d4a96a",
+  cyan:    "#7ec8e3",
+  gold:    "#e8c547",
+  mint:    "#6fcf97",
+};
+
+let state = DEFAULT_STATE;
+
+function _loadShared() {
+  try { return JSON.parse(localStorage.getItem(SHARED_KEY) || "{}"); } catch(e) { return {}; }
+}
+function _saveShared() {
+  var s = {};
+  SETTINGS_KEYS.forEach(function(k) { s[k] = state[k]; });
+  try { localStorage.setItem(SHARED_KEY, JSON.stringify(s)); } catch(e) {}
+}
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (parsed.version === 1) {
+        state = Object.assign({}, DEFAULT_STATE, parsed);
+      } else {
+        state = Object.assign({}, DEFAULT_STATE);
+      }
+    } else {
+      state = Object.assign({}, DEFAULT_STATE);
+    }
+  } catch(e) {
+    state = Object.assign({}, DEFAULT_STATE);
+  }
+  // Overlay shared settings (theme, fontSize, etc.) from other files
+  var shared = _loadShared();
+  SETTINGS_KEYS.forEach(function(k) { if (shared[k] !== undefined) state[k] = shared[k]; });
+}
+
+function saveState() {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch(e) {}
+  _saveShared();
+}
+
+// ── Fixed header height → main padding ───────────────────────────────────
+function updateMainPadding() {
+  var h = document.getElementById("fixed-header").offsetHeight;
+  var offset = h + 10;
+  document.querySelector("main").style.paddingTop = offset + "px";
+  document.querySelectorAll(".exam-section").forEach(function(s) {
+    s.style.scrollMarginTop = offset + "px";
+  });
+}
+
+function toggleStats() {
+  document.getElementById("stats-panel").classList.toggle("open");
+  updateMainPadding();
+}
+
+function toggleSettings() {
+  document.getElementById("settings-panel").classList.toggle("open");
+  updateMainPadding();
+}
+
+// ── Settings ──────────────────────────────────────────────────────────────────
+function applySettings() {
+  // Font size
+  document.body.setAttribute("data-fs", state.fontSize);
+  document.querySelectorAll(".fs-btn").forEach(function(b) {
+    b.classList.toggle("active", b.dataset.fs === state.fontSize);
+  });
+  // Content width
+  document.body.style.setProperty("--content-width", state.contentWidth + "px");
+  var wr = document.getElementById("width-range");
+  var wd = document.getElementById("width-display");
+  if (wr) wr.value = state.contentWidth;
+  if (wd) wd.textContent = state.contentWidth + "px";
+  // Font family
+  document.body.style.setProperty("--arabic-font", FONT_MAP[state.fontFamily] || FONT_MAP.amiri);
+  var fsel = document.getElementById("font-family-sel");
+  if (fsel) fsel.value = state.fontFamily;
+  // Explanation color
+  var col = EXP_COLOR_MAP[state.expColor];
+  if (col) document.body.style.setProperty("--exp-color", col);
+  else      document.body.style.removeProperty("--exp-color");
+  document.querySelectorAll(".color-sw").forEach(function(b) {
+    b.classList.toggle("active", b.dataset.c === state.expColor);
+  });
+}
+
+function changeFontSize(fs) {
+  state.fontSize = fs;
+  applySettings();
+  saveState();
+}
+
+function changeWidth(input) {
+  state.contentWidth = parseInt(input.value);
+  document.body.style.setProperty("--content-width", state.contentWidth + "px");
+  var wd = document.getElementById("width-display");
+  if (wd) wd.textContent = state.contentWidth + "px";
+  saveState();
+  updateMainPadding();
+}
+
+function changeFont(sel) {
+  state.fontFamily = sel.value;
+  document.body.style.setProperty("--arabic-font", FONT_MAP[sel.value] || FONT_MAP.amiri);
+  saveState();
+}
+
+function changeExpColor(c) {
+  state.expColor = c;
+  var col = EXP_COLOR_MAP[c];
+  if (col) document.body.style.setProperty("--exp-color", col);
+  else      document.body.style.removeProperty("--exp-color");
+  document.querySelectorAll(".color-sw").forEach(function(b) {
+    b.classList.toggle("active", b.dataset.c === c);
+  });
+  saveState();
+}
+
+// ── Initialise on load ───────────────────────────────────────────────────────
+document.addEventListener("DOMContentLoaded", function() {
+  loadState();
+  applyTheme(state.theme);
+  applyMode(state.mode);
+  restoreAnswers();
+  restoreStars();
+  updateAllProgress();
+  applyFilter(state.filter);
+  if (!state.showExplanations && state.mode === "study") hideExplanations();
+  document.getElementById("theme-select").value = state.theme;
+  applySettings();
+  updateMainPadding();
+  if (window.ResizeObserver) {
+    new ResizeObserver(updateMainPadding).observe(document.getElementById("fixed-header"));
+  } else {
+    window.addEventListener("resize", updateMainPadding);
+  }
+  initAnnotateSystem();
+});
+
+// ── Mode ─────────────────────────────────────────────────────────────────────
+function applyMode(mode) {
+  document.body.classList.remove("mode-study", "mode-test", "mode-marker", "mode-annotate",
+                                  "tool-pen", "tool-erase", "tool-pan");
+  document.body.classList.add("mode-" + mode);
+  if (mode === "annotate") { document.body.classList.add("tool-pen"); _hideSelPopup(); }
+
+  ["study","test","marker","annotate"].forEach(function(m) {
+    var btn = document.getElementById("mode-btn-" + m);
+    if (btn) btn.classList.toggle("active", m === mode);
+  });
+
+  if (mode === "study" && state.showExplanations) {
+    showExplanations();
+  } else if (mode === "test") {
+    // Leaving study mode: remove .visible from unanswered MCQ cards so the
+    // answer-block doesn't leak through into test mode
+    document.querySelectorAll(".qcard[data-type='mcq']:not([data-answered]) .answer-block")
+      .forEach(function(el) { el.classList.remove("visible"); });
+  }
+}
+
+function setMode(mode) {
+  state.mode = mode;
+  applyMode(mode);
+  saveState();
+}
+
+// ── Explanations toggle (study mode only) ────────────────────────────────────
+function toggleExplanations() {
+  state.showExplanations = !state.showExplanations;
+  if (state.showExplanations) showExplanations(); else hideExplanations();
+  updateExpToggleLabel();
+  saveState();
+}
+
+function showExplanations() {
+  // Auto-reveal all answer blocks (MCQ + written) in Study mode
+  document.querySelectorAll(".qcard .answer-block").forEach(function(el) {
+    el.classList.add("visible");
+  });
+}
+
+function hideExplanations() {
+  document.querySelectorAll(".qcard[data-type=mcq] .answer-block").forEach(function(el) {
+    if (!el.closest(".qcard").dataset.answered) el.classList.remove("visible");
+  });
+}
+
+
+// ── MCQ interaction (test mode) ───────────────────────────────────────────────
+document.addEventListener("click", function(e) {
+  var opt = e.target.closest(".opt");
+  if (!opt) return;
+  var card = opt.closest(".qcard");
+  if (!card || card.dataset.type !== "mcq") return;
+  if (card.dataset.answered) return;
+  if (!document.body.classList.contains("mode-test")) return;
+
+  var chosen  = opt.dataset.letter;
+  var correct = card.dataset.correct;
+  var isRight = chosen === correct;
+
+  // Mark options
+  card.querySelectorAll(".opt").forEach(function(o) {
+    o.style.pointerEvents = "none";
+    if (o.dataset.letter === correct) o.classList.add("opt-correct");
+    if (o.dataset.letter === chosen && !isRight) o.classList.add("opt-wrong");
+  });
+
+  card.dataset.answered = "1";
+  var qid = card.dataset.id;
+  state.answers[qid] = { chosen: chosen, correct: isRight, timestamp: Date.now() };
+  saveState();
+  updateAllProgress();
+  applyFilter(state.filter);
+
+  // Show answer reveal block (explanation stays hidden via CSS until Show Explanation clicked)
+  var ab = card.querySelector(".answer-block");
+  if (ab) ab.classList.add("visible");
+});
+
+// ── Show explanation (test mode, after answering) ─────────────────────────────
+function showExplanation(btn) {
+  var card = btn.closest(".qcard");
+  var isRevealed = !!card.querySelector(".explanation-ar.exp-revealed");
+  card.querySelectorAll(".explanation-ar, .exp-label").forEach(function(el) {
+    el.classList.toggle("exp-revealed", !isRevealed);
+  });
+  btn.innerHTML = isRevealed
+    ? "&#128161; Show Explanation"
+    : "&#128065;&#65039; Hide Explanation";
+}
+
+// ── Written question ──────────────────────────────────────────────────────────
+function showWrittenAnswer(btn) {
+  var card = btn.closest(".qcard");
+  var ab = card.querySelector(".answer-block");
+  if (ab) ab.classList.add("visible");
+  btn.style.display = "none";
+}
+
+function selfAssess(btn, isCorrect) {
+  var card = btn.closest(".qcard");
+  var qid  = card.dataset.id;
+  state.answers[qid] = { chosen: isCorrect ? "correct" : "wrong",
+                          correct: isCorrect, timestamp: Date.now() };
+  card.dataset.answered = "1";
+  card.querySelector(".self-assess").innerHTML =
+    isCorrect ? '<span style="color:var(--got-it)">✓ Marked correct</span>'
+              : '<span style="color:var(--missed)">✗ Marked wrong</span>';
+  saveState();
+  updateAllProgress();
+  applyFilter(state.filter);
+}
+
+// ── Matching question ─────────────────────────────────────────────────────────
+function checkMatching(btn) {
+  var card = btn.closest(".qcard");
+  var rows = card.querySelectorAll(".match-row");
+  var allCorrect = true;
+  rows.forEach(function(row) {
+    var sel = row.querySelector(".match-select");
+    var correct = row.dataset.correct;
+    row.classList.remove("match-correct","match-wrong");
+    if (sel.value === correct) {
+      row.classList.add("match-correct");
+    } else {
+      row.classList.add("match-wrong");
+      allCorrect = false;
+    }
+    sel.disabled = true;
+  });
+  btn.style.display = "none";
+  var qid = card.dataset.id;
+  state.answers[qid] = { chosen: "checked", correct: allCorrect, timestamp: Date.now() };
+  card.dataset.answered = "1";
+  var ab = card.querySelector(".answer-block");
+  if (ab) ab.classList.add("visible");
+  saveState();
+  updateAllProgress();
+  applyFilter(state.filter);
+}
+
+// ── Stars ─────────────────────────────────────────────────────────────────────
+function toggleStar(btn) {
+  var qid = btn.dataset.id;
+  var idx = state.starred.indexOf(qid);
+  if (idx === -1) {
+    state.starred.push(qid);
+    btn.textContent = "★";
+    btn.classList.add("starred");
+    btn.closest(".qcard").classList.add("starred-card");
+  } else {
+    state.starred.splice(idx, 1);
+    btn.textContent = "☆";
+    btn.classList.remove("starred");
+    btn.closest(".qcard").classList.remove("starred-card");
+  }
+  saveState();
+  updateFilterCounts();
+  if (state.filter === "starred") applyFilter("starred");
+}
+
+function restoreStars() {
+  state.starred.forEach(function(qid) {
+    var card = document.querySelector('.qcard[data-id="' + qid + '"]');
+    if (!card) return;
+    var btn = card.querySelector(".star-btn");
+    if (btn) { btn.textContent = "★"; btn.classList.add("starred"); }
+    card.classList.add("starred-card");
+  });
+}
+
+// ── Restore answers from localStorage ────────────────────────────────────────
+function restoreAnswers() {
+  Object.entries(state.answers).forEach(function([qid, ans]) {
+    var card = document.querySelector('.qcard[data-id="' + qid + '"]');
+    if (!card) return;
+    card.dataset.answered = "1";
+    var qtype = card.dataset.type;
+
+    if (qtype === "mcq") {
+      var correct = card.dataset.correct;
+      card.querySelectorAll(".opt").forEach(function(o) {
+        o.style.pointerEvents = "none";
+        if (o.dataset.letter === correct) o.classList.add("opt-correct");
+        if (o.dataset.letter === ans.chosen && ans.chosen !== correct)
+          o.classList.add("opt-wrong");
+      });
+      var ab = card.querySelector(".answer-block");
+      if (ab) ab.classList.add("visible");
+    } else if (qtype === "written") {
+      var ab = card.querySelector(".answer-block");
+      if (ab) ab.classList.add("visible");
+      var sa = card.querySelector(".show-answer-btn");
+      if (sa) sa.style.display = "none";
+      var assess = card.querySelector(".self-assess");
+      if (assess) assess.innerHTML = ans.correct
+        ? '<span style="color:var(--got-it)">✓ Marked correct</span>'
+        : '<span style="color:var(--missed)">✗ Marked wrong</span>';
+    } else if (qtype === "matching") {
+      var ab = card.querySelector(".answer-block");
+      if (ab) ab.classList.add("visible");
+    }
+  });
+}
+
+// ── Progress ──────────────────────────────────────────────────────────────────
+function getSectionStats(sectionQIds) {
+  var answered = sectionQIds.filter(function(id) { return state.answers[id]; });
+  var correct  = answered.filter(function(id) { return state.answers[id] && state.answers[id].correct; });
+  return { total: sectionQIds.length, answered: answered.length, correct: correct.length };
+}
+
+function updateAllProgress() {
+  var totalQ = 0, totalAns = 0, totalCor = 0;
+  SECTIONS.forEach(function(sec) {
+    var s = getSectionStats(sec.question_ids);
+    totalQ   += s.total;
+    totalAns += s.answered;
+    totalCor += s.correct;
+
+    // Update nav button progress
+    var btn = document.getElementById("navbtn-" + sec.slug);
+    if (btn) {
+      var prog = btn.querySelector(".sec-prog");
+      if (prog) prog.textContent = s.answered + "/" + s.total;
+    }
+
+    // Update section progress bar
+    var fill = document.getElementById("secfill-" + sec.slug);
+    if (fill) {
+      fill.style.width = (s.total > 0 ? (s.answered / s.total * 100) : 0) + "%";
+    }
+  });
+
+  // Overall stats
+  document.getElementById("stat-total").textContent   = totalQ;
+  document.getElementById("stat-ans").textContent     = totalAns;
+  document.getElementById("stat-correct").textContent = totalCor;
+  document.getElementById("stat-wrong").textContent   = totalAns - totalCor;
+  var pct = totalQ > 0 ? Math.round(totalAns / totalQ * 100) : 0;
+  document.getElementById("stat-pct").textContent     = pct + "%";
+
+  updateFilterCounts();
+}
+
+// ── Filters ───────────────────────────────────────────────────────────────────
+function updateFilterCounts() {
+  var all       = document.querySelectorAll(".qcard").length;
+  var answered  = Object.keys(state.answers).length;
+  var correct   = Object.values(state.answers).filter(function(a){return a.correct;}).length;
+  var wrong     = answered - correct;
+  var starred   = state.starred.length;
+  var unans     = all - answered;
+
+  document.getElementById("fc-all").textContent      = all;
+  document.getElementById("fc-unanswered").textContent = unans;
+  document.getElementById("fc-correct").textContent  = correct;
+  document.getElementById("fc-wrong").textContent    = wrong;
+  document.getElementById("fc-starred").textContent  = starred;
+}
+
+function applyFilter(filter) {
+  state.filter = filter;
+  document.querySelectorAll(".filter-btn").forEach(function(btn) {
+    btn.classList.toggle("active", btn.dataset.filter === filter);
+  });
+  var retryBtn = document.getElementById("retry-btn");
+  if (retryBtn) retryBtn.style.display = (filter === "wrong" || filter === "starred") ? "inline-block" : "none";
+
+  document.querySelectorAll(".qcard").forEach(function(card) {
+    var qid = card.dataset.id;
+    var ans = state.answers[qid];
+    var show = false;
+    if (filter === "all")          show = true;
+    else if (filter === "unanswered") show = !ans;
+    else if (filter === "correct") show = !!(ans && ans.correct);
+    else if (filter === "wrong")   show = !!(ans && !ans.correct);
+    else if (filter === "starred") show = state.starred.includes(qid);
+    card.classList.toggle("filtered-out", !show);
+  });
+
+  saveState();
+  updateFilterCounts();
+}
+
+// ── Theme ─────────────────────────────────────────────────────────────────────
+function applyTheme(theme) {
+  document.body.classList.remove("theme-light","theme-sepia","theme-hc","theme-dark");
+  document.body.classList.add("theme-" + theme);
+}
+
+function changeTheme(sel) {
+  state.theme = sel.value;
+  applyTheme(state.theme);
+  saveState();
+}
+
+// ── Cross-file settings sync ──────────────────────────────────────────────────
+window.addEventListener("storage", function(e) {
+  if (e.key !== SHARED_KEY || !e.newValue) return;
+  try {
+    var shared = JSON.parse(e.newValue);
+    SETTINGS_KEYS.forEach(function(k) { if (shared[k] !== undefined) state[k] = shared[k]; });
+    applyTheme(state.theme);
+    applySettings();
+    var ts = document.getElementById("theme-select");
+    if (ts) ts.value = state.theme;
+  } catch(err) {}
+});
+
+// ── Fullscreen ────────────────────────────────────────────────────────────────
+function toggleFullscreen() {
+  if (!document.fullscreenElement) {
+    document.documentElement.requestFullscreen().catch(() => {});
+  } else {
+    document.exitFullscreen();
+  }
+}
+document.addEventListener('fullscreenchange', () => {
+  const btn = document.getElementById('fs-btn');
+  if (!btn) return;
+  btn.innerHTML = document.fullscreenElement ? '&#x2716; Exit Full' : '&#x26F6; Fullscreen';
+});
+
+// ── Reset (full wipe) ─────────────────────────────────────────────────────────
+function resetProgress() {
+  if (!confirm("Full Reset: clears answers, stars, AND all settings. Are you sure?")) return;
+  state = Object.assign({}, DEFAULT_STATE);
+  saveState();
+  location.reload();
+}
+
+// ── Restart exam (keeps settings + stars, clears answers only) ────────────────
+function restartExam() {
+  if (!confirm("New Attempt: clears all answers but keeps your settings, theme, and starred questions.")) return;
+  state.answers = {};
+  state.filter  = "all";
+  saveState();
+  location.reload();
+}
+
+// ── Retry filtered questions (wrong or starred) ───────────────────────────────
+function retryFiltered() {
+  var label = state.filter === "starred" ? "starred" : "wrong";
+  var cards = Array.from(document.querySelectorAll(".qcard")).filter(function(c) {
+    return !c.classList.contains("filtered-out");
+  });
+  if (!cards.length) return;
+  var n = cards.length;
+  if (!confirm("Reset " + n + " " + label + " question" + (n > 1 ? "s" : "") + "? Their answers will be cleared.")) return;
+
+  cards.forEach(function(card) {
+    var qid = card.dataset.id;
+    delete state.answers[qid];
+    delete card.dataset.answered;
+
+    // MCQ: remove option highlights, re-enable pointer events
+    card.querySelectorAll(".opt").forEach(function(o) {
+      o.classList.remove("opt-correct", "opt-wrong");
+      o.style.pointerEvents = "";
+    });
+
+    // Hide answer block
+    var ab = card.querySelector(".answer-block");
+    if (ab) ab.classList.remove("visible");
+
+    // Hide explanation
+    card.querySelectorAll(".explanation-ar, .exp-label").forEach(function(el) {
+      el.classList.remove("exp-revealed");
+    });
+    card.querySelectorAll(".show-exp-btn").forEach(function(btn) {
+      btn.innerHTML = "&#128161; Show Explanation";
+    });
+
+    // Written: restore Show Answer button
+    var showAnsBtn = card.querySelector(".show-answer-btn");
+    if (showAnsBtn) showAnsBtn.style.display = "";
+
+    // Written: restore self-assess buttons
+    var sa = card.querySelector(".self-assess");
+    if (sa) {
+      sa.innerHTML =
+        '<button class="got-it-btn" onclick="selfAssess(this,true)" data-id="' + qid + '">&#10003; Got it</button>' +
+        '<button class="missed-btn" onclick="selfAssess(this,false)" data-id="' + qid + '">&#10007; Missed</button>';
+    }
+
+    // Matching: re-enable selects + show check button
+    card.querySelectorAll(".match-row").forEach(function(row) {
+      row.classList.remove("match-correct", "match-wrong");
+      var sel = row.querySelector(".match-select");
+      if (sel) sel.disabled = false;
+    });
+    var checkBtn = card.querySelector(".check-match-btn");
+    if (checkBtn) checkBtn.style.display = "";
+  });
+
+  saveState();
+  updateAllProgress();
+  applyFilter(state.filter);
+}
+
+// ── Ask GPT ───────────────────────────────────────────────────────────────────
+function askGPT(btn) {
+  var card = btn.closest('.qcard');
+  var qtext = (card.querySelector('.q-text') || {}).innerText || '';
+  var subject = card.dataset.subject || 'Medicine';
+  var qtype = card.dataset.type || 'mcq';
+
+  var prompt = '';
+  if (qtype === 'mcq') {
+    var opts = '';
+    card.querySelectorAll('.opt').forEach(function(o) {
+      opts += o.innerText.trim() + '\n';
+    });
+    prompt = 'أنت مدرس متخصص في ' + subject + '.\n\n'
+           + 'سؤال امتحان:\n' + qtext + '\n\n'
+           + 'الاختيارات:\n' + opts + '\n'
+           + 'اشرح:\n'
+           + '1. الإجابة الصحيحة وليه؟\n'
+           + '2. ليه كل اختيار تاني غلط؟ (سطر لكل واحدة)\n\n'
+           + 'اكتب بالعامية المصرية مع الاصطلاحات الطبية بالإنجليزي.';
+  } else {
+    prompt = 'أنت مدرس متخصص في ' + subject + '.\n\n'
+           + 'سؤال مقالي:\n' + qtext + '\n\n'
+           + 'اكتب إجابة امتحانية مختصرة:\n'
+           + '- كل نقطة في سطر منفصل\n'
+           + '- استخدم أرقام للنقاط\n'
+           + '- اذكر العدد صريحاً لو في "5 وظائف" مثلاً\n'
+           + '- keyword phrases مش جمل طويلة';
+  }
+
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(prompt).then(function() {
+      _showGptToast();
+      window.open('https://chat.openai.com/', '_blank');
+    }).catch(function() {
+      _gptFallback(prompt);
+    });
+  } else {
+    _gptFallback(prompt);
+  }
+}
+
+function _showGptToast() {
+  var t = document.createElement('div');
+  t.className = 'gpt-toast';
+  t.textContent = '\u2714 Prompt copied — paste in ChatGPT';
+  document.body.appendChild(t);
+  setTimeout(function() { t.remove(); }, 3000);
+}
+
+function _gptFallback(prompt) {
+  var ta = document.createElement('textarea');
+  ta.value = prompt;
+  ta.style.cssText = 'position:fixed;opacity:0;top:0;left:0';
+  document.body.appendChild(ta);
+  ta.select();
+  try { document.execCommand('copy'); } catch(e) {}
+  ta.remove();
+  _showGptToast();
+  window.open('https://chat.openai.com/', '_blank');
+}
+
+// ── Print protection ──────────────────────────────────────────────────────────
+// Block Ctrl+P / Cmd+P keyboard shortcut
+document.addEventListener("keydown", function(e) {
+  if ((e.ctrlKey || e.metaKey) && (e.key === "p" || e.key === "P")) {
+    e.preventDefault();
+    e.stopPropagation();
+  }
+}, true);
+
+// beforeprint fires even from browser menu — hide body immediately
+window.addEventListener("beforeprint", function() {
+  document.documentElement.style.display = "none";
+});
+window.addEventListener("afterprint", function() {
+  document.documentElement.style.display = "";
+});
+
+// ── Annotate system ──────────────────────────────────────────────────────────
+const ANN_KEY = STORAGE_KEY + '_ann';
+var annTool = 'pen', annColor = '#e74c3c', annWidth = 3;
+var annIsDrawing = false, annCurrentStroke = null, annLastX = 0, annLastY = 0;
+var THROTTLE_SQ = 9, ERASE_R = 20, PALM_W = 50;
+var annPalmReject = true;          // palm rejection on by default
+var annSmooth = 0.8;               // stroke smoothing 0 (off) → 1 (full bezier)
+var annScrollY = null;             // reference y for pan-tool scroll
+var _scrollV = 0;                  // scroll velocity (px/frame) for inertia
+var _scrollRaf = null;             // RAF handle for inertia animation
+var ANN_CFG_KEY = ANN_KEY + '_cfg'; // persists rendering settings (smooth, palmReject)
+var annCanvases = {}, annStrokes = {}, annUndoStacks = {}, annRafQ = {};
+
+function _loadAnns() {
+  try { return JSON.parse(localStorage.getItem(ANN_KEY) || '{}'); } catch(e) { return {}; }
+}
+function _saveAnn(qid) {
+  var anns = _loadAnns(); anns[qid] = anns[qid] || {};
+  anns[qid].strokes = annStrokes[qid] || [];
+  localStorage.setItem(ANN_KEY, JSON.stringify(anns));
+}
+function _schedRdraw(qid) {
+  if (annRafQ[qid]) return; annRafQ[qid] = true;
+  requestAnimationFrame(function() { _rdraw(qid); annRafQ[qid] = false; });
+}
+function _drawStroke(ctx, stroke, canvas) {
+  var pts = stroke.points;
+  if (!pts || !pts.length) return;
+  ctx.beginPath(); ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+  ctx.strokeStyle = stroke.color; ctx.lineWidth = stroke.width;
+  var xp = function(i) { return pts[i].x * canvas.width; };
+  var yp = function(i) { return pts[i].y; }; // y is absolute pixels
+  ctx.moveTo(xp(0), yp(0));
+  if (pts.length < 3 || annSmooth < 0.01) {
+    // 0% smoothing → straight lines
+    for (var i = 1; i < pts.length; i++) ctx.lineTo(xp(i), yp(i));
+  } else {
+    // Parameterized midpoint bezier: blend factor = annSmooth * 0.5
+    // At annSmooth=1 → end = exact midpoint (full smoothing)
+    // At annSmooth=0.x → end pulled closer to control point (less rounding)
+    var s = annSmooth * 0.5;
+    for (var i = 0; i < pts.length - 2; i++) {
+      var cpx = xp(i+1), cpy = yp(i+1);
+      var nx = xp(i+2), ny = yp(i+2);
+      ctx.quadraticCurveTo(cpx, cpy, cpx + s * (nx - cpx), cpy + s * (ny - cpy));
+    }
+    ctx.lineTo(xp(pts.length-1), yp(pts.length-1));
+  }
+  ctx.stroke();
+}
+function _rdraw(qid) {
+  var c = annCanvases[qid]; if (!c) return;
+  c.ctx.clearRect(0, 0, c.canvas.width, c.canvas.height);
+  (annStrokes[qid] || []).forEach(function(stroke) { _drawStroke(c.ctx, stroke, c.canvas); });
+}
+function _rdrawWithCurrent(qid) {
+  var c = annCanvases[qid]; if (!c) return;
+  c.ctx.clearRect(0, 0, c.canvas.width, c.canvas.height);
+  (annStrokes[qid] || []).forEach(function(stroke) { _drawStroke(c.ctx, stroke, c.canvas); });
+  if (annCurrentStroke && annCurrentStroke.points.length > 1)
+    _drawStroke(c.ctx, annCurrentStroke, c.canvas);
+}
+function _onQcardResize(qcard) {
+  var cv = qcard.querySelector('.qcard-canvas'); if (!cv) return;
+  var qid = cv.dataset.qid;
+  var c = annCanvases[qid]; if (!c) return;
+  var changed = false;
+  if (c.canvas.width !== qcard.offsetWidth) { c.canvas.width = qcard.offsetWidth; changed = true; }
+  var fh = qcard.scrollHeight;
+  if (fh > c.canvas.height) { c.canvas.height = fh; changed = true; } // only grow — never shrink
+  if (changed) _schedRdraw(qid);
+}
+function initAnnotateSystem() {
+  var anns = _loadAnns();
+  // Restore annotation rendering settings
+  var cfg = _loadAnnCfg();
+  if (cfg.smooth !== undefined) annSmooth = cfg.smooth;
+  if (cfg.palmReject !== undefined) annPalmReject = cfg.palmReject;
+  // Sync UI controls
+  var smR = document.getElementById('ann-smooth-range');
+  var smD = document.getElementById('ann-smooth-display');
+  if (smR) smR.value = Math.round(annSmooth * 100);
+  if (smD) smD.textContent = Math.round(annSmooth * 100) + '%';
+  var prB = document.getElementById('palm-reject-btn');
+  if (prB) {
+    prB.innerHTML = '&#128586; Palm Reject: ' + (annPalmReject ? 'ON' : 'OFF');
+    prB.classList.toggle('active', annPalmReject);
+  }
+  document.querySelectorAll('.qcard-canvas').forEach(function(canvas) {
+    var qid = canvas.dataset.qid;
+    var qcard = canvas.closest('.qcard');
+    canvas.width = qcard.offsetWidth; canvas.height = qcard.scrollHeight;
+    var ctx = canvas.getContext('2d');
+    annCanvases[qid] = { canvas: canvas, ctx: ctx };
+    annStrokes[qid] = (anns[qid] && anns[qid].strokes) ? anns[qid].strokes : [];
+    _schedRdraw(qid);
+    canvas.addEventListener('pointerdown',  function(e) { _annDown(e, qid); });
+    canvas.addEventListener('pointermove',  function(e) { _annMove(e, qid); });
+    canvas.addEventListener('pointerup',    function(e) { _annUp(e, qid); });
+    canvas.addEventListener('pointerleave', function(e) { _annUp(e, qid); });
+    canvas.addEventListener('pointercancel',function(e) {
+      _cancelAnnStroke(qid);
+    });
+  });
+  if (window.ResizeObserver) {
+    var annRo = new ResizeObserver(function(entries) {
+      entries.forEach(function(e) { _onQcardResize(e.target); });
+    });
+    document.querySelectorAll('.qcard').forEach(function(qcard) { annRo.observe(qcard); });
+  }
+  document.addEventListener('keydown', function(e) {
+    if (!document.body.classList.contains('mode-annotate')) return;
+    if (e.target.classList && e.target.classList.contains('sticky-canvas')) {
+      if (e.ctrlKey && !e.shiftKey && e.key === 'z') { e.preventDefault(); _noteUndo(e.target); }
+      if (e.ctrlKey && (e.key === 'y' || (e.shiftKey && e.key === 'z'))) { e.preventDefault(); _noteRedo(e.target); }
+      return;
+    }
+    if (e.ctrlKey && !e.shiftKey && e.key === 'z') { e.preventDefault(); annUndo(); }
+    if (e.ctrlKey && (e.key === 'y' || (e.shiftKey && e.key === 'z'))) { e.preventDefault(); annRedo(); }
+  });
+  _restoreHL();
+  _initSelPopup();
+}
+
+function _annDown(e, qid) {
+  if (e.pointerType === 'touch' && annPalmReject &&
+      ((e.width || 0) > PALM_W || (e.height || 0) > PALM_W)) return; // reject palm
+  e.preventDefault();
+  if (annTool === 'pan') { _stopInertia(); annScrollY = e.clientY; return; } // pan mode
+  annIsDrawing = true;
+  if (annTool === 'erase') return;
+  annCurrentStroke = { id: 'sk_' + Date.now(), color: annColor, width: annWidth, points: [] };
+  var c = annCanvases[qid].canvas, r = c.getBoundingClientRect();
+  annLastX = e.clientX - r.left; annLastY = e.clientY - r.top;
+  annCurrentStroke.points.push({ x: +(annLastX / c.width).toFixed(3), y: Math.round(annLastY) });
+}
+function _annMove(e, qid) {
+  if (e.pointerType === 'touch' && annPalmReject &&
+      ((e.width || 0) > PALM_W || (e.height || 0) > PALM_W)) return; // reject palm
+  if (annTool === 'pan' && annScrollY !== null) { // single-finger pan scroll
+    var dp = annScrollY - e.clientY;
+    _scrollV = dp * 0.7 + _scrollV * 0.3;
+    window.scrollBy(0, dp); annScrollY = e.clientY; e.preventDefault(); return;
+  }
+  if (annTool === 'erase' && annIsDrawing) { _annErase(e, qid); return; }
+  if (!annIsDrawing) return;
+  e.preventDefault();
+  var c = annCanvases[qid].canvas, r = c.getBoundingClientRect();
+  var px = e.clientX - r.left, py = e.clientY - r.top;
+  var dx = px - annLastX, dy = py - annLastY;
+  if (dx * dx + dy * dy < THROTTLE_SQ) return;
+  annLastX = px; annLastY = py;
+  annCurrentStroke.points.push({ x: +(px / c.width).toFixed(3), y: Math.round(py) });
+  _rdrawWithCurrent(qid);
+}
+function _annUp(e, qid) {
+  if (annTool === 'pan') {
+    if (annScrollY !== null) { _launchInertia(); annScrollY = null; }
+    return;
+  }
+  if (!annIsDrawing) return; annIsDrawing = false;
+  if (annCurrentStroke && annCurrentStroke.points.length > 1) {
+    annStrokes[qid] = annStrokes[qid] || [];
+    annStrokes[qid].push(annCurrentStroke);
+    annUndoStacks[qid] = []; _saveAnn(qid);
+  }
+  annCurrentStroke = null; _schedRdraw(qid);
+}
+function _annErase(e, qid) {
+  var c = annCanvases[qid]; if (!c) return;
+  var r = c.canvas.getBoundingClientRect();
+  var px = e.clientX - r.left, py = e.clientY - r.top;
+  var before = (annStrokes[qid] || []).length;
+  annStrokes[qid] = (annStrokes[qid] || []).filter(function(stroke) {
+    return !stroke.points.some(function(pt) {
+      var dx = pt.x * c.canvas.width - px, dy = pt.y - py; // pt.y is absolute pixels
+      return dx * dx + dy * dy < ERASE_R * ERASE_R;
+    });
+  });
+  if ((annStrokes[qid] || []).length !== before) { _schedRdraw(qid); _saveAnn(qid); }
+}
+function annUndo(qid) {
+  qid = qid || _centreQid();
+  if (!qid || !annStrokes[qid] || !annStrokes[qid].length) return;
+  annUndoStacks[qid] = annUndoStacks[qid] || [];
+  annUndoStacks[qid].push(annStrokes[qid].pop());
+  _schedRdraw(qid); _saveAnn(qid);
+}
+function annRedo(qid) {
+  qid = qid || _centreQid();
+  if (!qid || !annUndoStacks[qid] || !annUndoStacks[qid].length) return;
+  annStrokes[qid] = annStrokes[qid] || [];
+  annStrokes[qid].push(annUndoStacks[qid].pop());
+  _schedRdraw(qid); _saveAnn(qid);
+}
+function _centreQid() {
+  var best = null, bestD = Infinity;
+  document.querySelectorAll('.qcard-canvas').forEach(function(cv) {
+    var r = cv.getBoundingClientRect();
+    var d = Math.abs(r.top + r.height / 2 - window.innerHeight / 2);
+    if (d < bestD) { bestD = d; best = cv.dataset.qid; }
+  });
+  return best;
+}
+function _cancelAnnStroke(qid) {
+  if (annIsDrawing) { annIsDrawing = false; annCurrentStroke = null; _schedRdraw(qid); }
+}
+function _stopInertia() {
+  if (_scrollRaf) { cancelAnimationFrame(_scrollRaf); _scrollRaf = null; }
+  _scrollV = 0;
+}
+function _launchInertia() {
+  if (_scrollRaf) cancelAnimationFrame(_scrollRaf);
+  (function tick() {
+    if (Math.abs(_scrollV) < 0.5) { _scrollV = 0; return; }
+    window.scrollBy(0, _scrollV);
+    _scrollV *= 0.91; // friction — higher = more glide
+    _scrollRaf = requestAnimationFrame(tick);
+  })();
+}
+function _loadAnnCfg() {
+  try { return JSON.parse(localStorage.getItem(ANN_CFG_KEY) || '{}'); } catch(e) { return {}; }
+}
+function _saveAnnCfg() {
+  localStorage.setItem(ANN_CFG_KEY, JSON.stringify({ smooth: annSmooth, palmReject: annPalmReject }));
+}
+function togglePalmReject(btn) {
+  annPalmReject = !annPalmReject;
+  btn.innerHTML = '&#128586; Palm Reject: ' + (annPalmReject ? 'ON' : 'OFF');
+  btn.classList.toggle('active', annPalmReject);
+  _saveAnnCfg();
+}
+function changeAnnSmooth(input) {
+  annSmooth = +input.value / 100;
+  var d = document.getElementById('ann-smooth-display');
+  if (d) d.textContent = input.value + '%';
+  _saveAnnCfg();
+  // Live redraw: all existing strokes update instantly
+  Object.keys(annCanvases).forEach(function(qid) { _schedRdraw(qid); });
+}
+
+
+function toggleNote(btn) {
+  var qid = btn.dataset.qid;
+  var note = btn.closest('.qcard').querySelector('.sticky-note');
+  note.classList.toggle('visible');
+  if (note.classList.contains('visible')) _initSticky(qid, note);
+  btn.classList.toggle('has-note', note.classList.contains('visible'));
+}
+function closeNote(btn) { btn.closest('.sticky-note').classList.remove('visible'); }
+function _initSticky(qid, note) {
+  var sc = note.querySelector('.sticky-canvas');
+  if (sc._init) return;
+  sc.width = Math.max(note.clientWidth - 2, 50);
+  sc.height = Math.max(note.clientHeight - 26, 50);
+  var ctx = sc.getContext('2d');
+  var anns = _loadAnns();
+  sc._qid = qid; sc._ctx = ctx;
+  sc._strokes = (anns[qid] && anns[qid].note) ? anns[qid].note : [];
+  sc._undo = []; sc._color = '#e74c3c'; sc._width = 3; sc._tool = 'pen';
+  _rdrawNote(sc);
+  sc.addEventListener('pointerdown', function(e) { _nDown(e, sc); });
+  sc.addEventListener('pointermove', function(e) { _nMove(e, sc); });
+  sc.addEventListener('pointerup',   function(e) { _nUp(e, sc); });
+  // Inject mini toolbar into header (once)
+  var header = note.querySelector('.sticky-note-header');
+  if (!header.querySelector('.note-mini-bar')) {
+    var bar = document.createElement('div'); bar.className = 'note-mini-bar';
+    bar.innerHTML =
+      '<span class="nc act" style="background:#e74c3c" data-c="#e74c3c"></span>' +
+      '<span class="nc" style="background:#2980b9" data-c="#2980b9"></span>' +
+      '<span class="nc" style="background:#27ae60" data-c="#27ae60"></span>' +
+      '<span class="nc" style="background:#111111" data-c="#111111"></span>' +
+      '<input class="nw" type="range" min="1" max="8" value="3">' +
+      '<button class="ne">&#9998;</button>' +
+      '<button class="nu">&#8617;</button>';
+    header.insertBefore(bar, header.firstChild);
+    bar.querySelectorAll('.nc').forEach(function(dot) {
+      dot.addEventListener('click', function() {
+        sc._color = dot.dataset.c; sc._tool = 'pen';
+        var neB = bar.querySelector('.ne');
+        neB.innerHTML = '&#9998;'; neB.className = 'ne';
+        bar.querySelectorAll('.nc').forEach(function(d) { d.classList.remove('act'); });
+        dot.classList.add('act');
+      });
+    });
+    var wIn = bar.querySelector('.nw');
+    if (wIn) wIn.addEventListener('input', function() { sc._width = +wIn.value; });
+    var neB = bar.querySelector('.ne');
+    if (neB) neB.addEventListener('click', function() {
+      sc._tool = sc._tool === 'erase' ? 'pen' : 'erase';
+      neB.innerHTML = sc._tool === 'erase' ? '&#11036;' : '&#9998;';
+      neB.className = sc._tool === 'erase' ? 'ne erasing' : 'ne';
+    });
+    var nuB = bar.querySelector('.nu');
+    if (nuB) nuB.addEventListener('click', function() { _noteUndo(sc); });
+  }
+  // Resize observer: sync canvas to note size
+  if (window.ResizeObserver) {
+    new ResizeObserver(function() {
+      var nW = Math.max(note.clientWidth - 2, 50);
+      var nH = Math.max(note.clientHeight - 26, 50);
+      if (sc.width === nW && sc.height === nH) return;
+      sc.width = nW; sc.height = nH;
+      _rdrawNote(sc);
+    }).observe(note);
+  }
+  sc._init = true;
+}
+function _rdrawNote(sc) {
+  sc._ctx.clearRect(0, 0, sc.width, sc.height);
+  (sc._strokes || []).forEach(function(stroke) { _drawStroke(sc._ctx, stroke, sc); });
+}
+function _nDown(e, sc) {
+  sc.focus(); e.preventDefault(); sc._drawing = true;
+  if (sc._tool === 'erase') return;
+  sc._cur = { id: 'n_' + Date.now(), color: sc._color, width: sc._width, points: [] };
+  var r = sc.getBoundingClientRect();
+  sc._cur.points.push({ x: +((e.clientX - r.left) / sc.width).toFixed(3), y: Math.round(e.clientY - r.top) });
+}
+function _nErase(e, sc) {
+  var r = sc.getBoundingClientRect(), px = e.clientX - r.left, py = e.clientY - r.top;
+  var before = sc._strokes.length;
+  sc._strokes = sc._strokes.filter(function(stroke) {
+    return !stroke.points.some(function(pt) {
+      var dx = pt.x * sc.width - px, dy = pt.y - py; // pt.y is absolute pixels
+      return dx * dx + dy * dy < ERASE_R * ERASE_R;
+    });
+  });
+  if (sc._strokes.length !== before) { _rdrawNote(sc); _saveNote(sc); }
+}
+function _nMove(e, sc) {
+  if (sc._tool === 'erase' && sc._drawing) { _nErase(e, sc); return; }
+  if (!sc._drawing) return;
+  e.preventDefault();
+  var r = sc.getBoundingClientRect();
+  sc._cur.points.push({ x: +((e.clientX - r.left) / sc.width).toFixed(3), y: Math.round(e.clientY - r.top) });
+  _rdrawNote(sc);
+  if (sc._cur.points.length > 1) _drawStroke(sc._ctx, sc._cur, sc);
+}
+function _nUp(e, sc) {
+  if (!sc._drawing) return; sc._drawing = false;
+  if (sc._cur && sc._cur.points.length > 1) {
+    sc._strokes.push(sc._cur); sc._undo = []; _saveNote(sc);
+  }
+  sc._cur = null; _rdrawNote(sc);
+}
+function _saveNote(sc) {
+  var anns = _loadAnns(); anns[sc._qid] = anns[sc._qid] || {};
+  anns[sc._qid].note = sc._strokes; localStorage.setItem(ANN_KEY, JSON.stringify(anns));
+}
+function _noteUndo(sc) {
+  if (!sc._strokes || !sc._strokes.length) return;
+  sc._undo = sc._undo || []; sc._undo.push(sc._strokes.pop());
+  _rdrawNote(sc); _saveNote(sc);
+}
+function _noteRedo(sc) {
+  if (!sc._undo || !sc._undo.length) return;
+  sc._strokes.push(sc._undo.pop()); _rdrawNote(sc); _saveNote(sc);
+}
+
+function setAnnTool(tool) {
+  annTool = tool;
+  document.body.className = document.body.className.replace(/\btool-\w+/g, '').trim();
+  document.body.classList.add('tool-' + tool);
+  document.querySelectorAll('.ann-tool-btn').forEach(function(b) {
+    b.classList.toggle('active', b.dataset.tool === tool);
+  });
+}
+function setAnnColor(el) {
+  annColor = el.dataset.color;
+  document.querySelectorAll('.ann-color').forEach(function(c) { c.classList.remove('active'); });
+  el.classList.add('active');
+}
+function setAnnWidth(input) { annWidth = +input.value; }
+function clearAllAnnotations() {
+  if (!confirm('Clear all annotations on this page? This cannot be undone.')) return;
+  localStorage.removeItem(ANN_KEY);
+  Object.keys(annStrokes).forEach(function(qid) { annStrokes[qid] = []; _schedRdraw(qid); });
+  document.querySelectorAll('mark[class^="hl-"]').forEach(function(m) {
+    var p = m.parentNode; while (m.firstChild) p.insertBefore(m.firstChild, m); p.removeChild(m);
+  });
+}
+
+// === CUSTOM SELECTION POPUP ===
+var _selPop = null;
+function _initSelPopup() {
+  _selPop = document.getElementById('sel-popup');
+  if (!_selPop) return;
+  // Hide popup when user clicks outside it
+  document.addEventListener('mousedown', function(e) {
+    if (_selPop && !_selPop.contains(e.target)) _hideSelPopup();
+  });
+  // Show popup when user makes a text selection inside a qcard
+  document.addEventListener('selectionchange', function() {
+    var sel = window.getSelection();
+    if (!sel || sel.isCollapsed || !sel.rangeCount) {
+      // Small delay: avoids hiding before a button click registers
+      setTimeout(function() {
+        var s = window.getSelection();
+        if (!s || s.isCollapsed) _hideSelPopup();
+      }, 120);
+      return;
+    }
+    var range = sel.getRangeAt(0);
+    var node = range.commonAncestorContainer;
+    var el = node.nodeType === 1 ? node : node.parentElement;
+    if (!el || !el.closest('.qcard')) { _hideSelPopup(); return; }
+    if (document.body.classList.contains('mode-annotate')) { _hideSelPopup(); return; }
+    _showSelPopup(range);
+  });
+}
+function _showSelPopup(range) {
+  if (!_selPop) return;
+  var rect = range.getBoundingClientRect();
+  if (!rect || (rect.width < 2 && rect.height < 2)) return;
+  var x = rect.left + rect.width / 2;
+  // Clamp horizontally so popup stays within viewport
+  x = Math.max(120, Math.min(window.innerWidth - 120, x));
+  var popH = 46;
+  var top = rect.top - popH - 8;
+  if (top < 60) top = rect.bottom + 8; // flip below selection when near top
+  _selPop.style.left = x + 'px';
+  _selPop.style.top = top + 'px';
+  // Show remove-hl button only when selection contains a highlight
+  var frag = range.cloneContents();
+  var hasHL = !!(frag.querySelector && frag.querySelector('mark[class^="hl-"]'));
+  var rb = document.getElementById('sel-remove-btn');
+  if (rb) rb.style.display = hasHL ? '' : 'none';
+  _selPop.classList.add('visible');
+}
+function _hideSelPopup() {
+  if (_selPop) _selPop.classList.remove('visible');
+}
+function selHighlight(color) {
+  var sel = window.getSelection();
+  if (!sel || sel.isCollapsed || !sel.rangeCount) { _hideSelPopup(); return; }
+  var range = sel.getRangeAt(0);
+  var node = range.commonAncestorContainer;
+  var el = node.nodeType === 1 ? node : node.parentElement;
+  var qcard = el ? el.closest('.qcard') : null;
+  if (!qcard) { _hideSelPopup(); return; }
+  var mark = document.createElement('mark');
+  mark.className = 'hl-' + color;
+  try {
+    range.surroundContents(mark);
+  } catch(e) {
+    // Range crosses element boundaries — extract and re-insert
+    try {
+      var frag = range.extractContents();
+      mark.appendChild(frag);
+      range.insertNode(mark);
+    } catch(e2) { _hideSelPopup(); return; }
+  }
+  sel.removeAllRanges();
+  _saveHL(qcard);
+  _hideSelPopup();
+}
+function selRemoveHighlight() {
+  var sel = window.getSelection();
+  if (!sel || !sel.rangeCount) { _hideSelPopup(); return; }
+  var range = sel.getRangeAt(0);
+  var node = range.commonAncestorContainer;
+  var el = node.nodeType === 1 ? node : node.parentElement;
+  var qcard = el ? el.closest('.qcard') : null;
+  if (!qcard) { _hideSelPopup(); return; }
+  var toRemove = [];
+  qcard.querySelectorAll('mark[class^="hl-"]').forEach(function(m) {
+    if (sel.containsNode(m, true)) toRemove.push(m);
+  });
+  toRemove.forEach(function(m) {
+    var p = m.parentNode;
+    while (m.firstChild) p.insertBefore(m.firstChild, m);
+    p.removeChild(m);
+  });
+  sel.removeAllRanges();
+  _saveHL(qcard);
+  _hideSelPopup();
+}
+function selCopy() {
+  var sel = window.getSelection();
+  if (sel && !sel.isCollapsed) {
+    try { document.execCommand('copy'); } catch(e) {}
+  }
+  _hideSelPopup();
+}
+function selSearch() {
+  var sel = window.getSelection();
+  var q = sel ? sel.toString().trim() : '';
+  if (q) window.open('https://www.google.com/search?q=' + encodeURIComponent(q), '_blank');
+  _hideSelPopup();
+}
+function _saveHL(qcard) {
+  var qid = qcard.dataset.id;
+  var anns = _loadAnns(); anns[qid] = anns[qid] || {};
+  var hl = {};
+  var qt = qcard.querySelector('.q-text');         if (qt) hl.qt = qt.innerHTML;
+  var op = qcard.querySelector('.opts');            if (op) hl.op = op.innerHTML;
+  var ex = qcard.querySelector('.explanation-ar'); if (ex) hl.ex = ex.innerHTML;
+  var wa = qcard.querySelector('.written-answer'); if (wa) hl.wa = wa.innerHTML;
+  var ar = qcard.querySelector('.answer-reveal');  if (ar) hl.ar = ar.innerHTML;
+  anns[qid].hl = hl;
+  localStorage.setItem(ANN_KEY, JSON.stringify(anns));
+}
+function _restoreHL() {
+  var anns = _loadAnns();
+  document.querySelectorAll('.qcard').forEach(function(qcard) {
+    var qid = qcard.dataset.id;
+    var hl = anns[qid] && anns[qid].hl;
+    if (!hl) return;
+    var qt = qcard.querySelector('.q-text');         if (qt && hl.qt) qt.innerHTML = hl.qt;
+    var op = qcard.querySelector('.opts');            if (op && hl.op) op.innerHTML = hl.op;
+    var ex = qcard.querySelector('.explanation-ar'); if (ex && hl.ex) ex.innerHTML = hl.ex;
+    var wa = qcard.querySelector('.written-answer'); if (wa && hl.wa) wa.innerHTML = hl.wa;
+    var ar = qcard.querySelector('.answer-reveal');  if (ar && hl.ar) ar.innerHTML = hl.ar;
+  });
+}
+</script>
+</body>
+</html>
